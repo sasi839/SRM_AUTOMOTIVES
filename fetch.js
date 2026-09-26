@@ -1,0 +1,1 @@
+fetch("https://html.duckduckgo.com/html/?q=car+mechanic+repair").then(r => r.text()).then(html => { const matches = html.match(/src="\/\/external-content\.duckduckgo\.com\/iu\/\?u=([^&"]+)/g); if(matches) { const urls = matches.map(m => decodeURIComponent(m.split("u=")[1])); console.log([...new Set(urls)].slice(0, 10)); } })
