@@ -9,7 +9,7 @@ const AboutSection = () => {
         <img 
           src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=300&q=80" 
           alt="Garage" 
-          className="w-[120px] sm:w-[160px] md:w-[210px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity"
+          className="w-[120px] sm:w-[160px] md:w-[210px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
       
@@ -17,7 +17,7 @@ const AboutSection = () => {
         <img 
           src="https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?auto=format&fit=crop&w=300&q=80" 
           alt="Engine" 
-          className="w-[120px] sm:w-[160px] md:w-[210px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity"
+          className="w-[120px] sm:w-[160px] md:w-[210px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
       
@@ -25,7 +25,7 @@ const AboutSection = () => {
         <img 
           src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=300&q=80" 
           alt="Wheel" 
-          className="w-[100px] sm:w-[140px] md:w-[180px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity"
+          className="w-[100px] sm:w-[140px] md:w-[180px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
       
@@ -33,21 +33,21 @@ const AboutSection = () => {
         <img 
           src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=300&q=80" 
           alt="Tools" 
-          className="w-[130px] sm:w-[170px] md:w-[220px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity"
+          className="w-[130px] sm:w-[170px] md:w-[220px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
 
       {/* Content */}
       <div className="flex flex-col items-center text-center z-10 w-full max-w-4xl mx-auto">
         <FadeIn delay={0} y={40} className="mb-10 sm:mb-14 md:mb-16 w-full">
-          <h2 className="hero-heading font-black uppercase leading-none tracking-tight text-[clamp(3rem,12vw,160px)]">
+          <h2 className="hero-heading section-accent section-accent-center font-black uppercase leading-none tracking-tight text-[clamp(3rem,12vw,160px)]">
             About Us
           </h2>
         </FadeIn>
         
         {/* Short punchy Animated Text */}
         <AnimatedText 
-          text="SRM Motors began with a simple idea: car care shouldn't feel like a hassle." 
+          text="SRM Automotives began with a simple idea: car care shouldn't feel like a hassle." 
           className="text-white font-medium leading-relaxed max-w-2xl text-[clamp(1.2rem,2.5vw,1.8rem)] mb-10"
         />
 
@@ -67,13 +67,13 @@ const AboutSection = () => {
           
           <FadeIn delay={0.3}>
             <p>
-              Accidents and breakdowns rarely happen at a good time. That's why we run a <strong>24/7 emergency roadside towing service</strong> — one call, and we're on our way to get you and your car back on track, day or night.
+              Accidents and breakdowns rarely happen at a good time. That's why we run a <strong className="text-brand">24/7 emergency roadside towing service</strong> — one call, and we're on our way to get you and your car back on track, day or night.
             </p>
           </FadeIn>
 
           <FadeIn delay={0.4}>
             <p className="text-white font-medium italic">
-              At SRM Motors, we're not just fixing cars — we're building trust with every customer who walks through our doors. We're here to keep you moving.
+              At SRM Automotives, we're not just fixing cars — we're building trust with every customer who walks through our doors. We're here to keep you moving.
             </p>
           </FadeIn>
         </div>

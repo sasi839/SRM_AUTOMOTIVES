@@ -2,6 +2,15 @@
 
 @theme {
   --font-sans: "Kanit", sans-serif;
+
+  /* Brand Colour System */
+  --color-brand: #C8A44E;
+  --color-brand-dark: #9A7B35;
+  --color-brand-light: #D4B96A;
+  --color-surface: #111111;
+  --color-surface-light: #1A1A1A;
+  --color-border: rgba(200, 164, 78, 0.15);
+  --color-border-hover: rgba(200, 164, 78, 0.4);
 }
 
 @layer base {
@@ -19,9 +28,140 @@
   }
 }
 
+/* ── Hero heading gradient text ── */
 .hero-heading {
   background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ── Premium Section Heading Accent ── */
+.section-accent {
+  position: relative;
+  display: inline-block;
+}
+.section-accent::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-brand), transparent);
+  border-radius: 2px;
+}
+.section-accent-center::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ── Ken Burns keyframes ── */
+@keyframes ken-burns {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.08) translate3d(-1%, -0.5%, 0);
+  }
+}
+
+.animate-ken-burns {
+  animation: ken-burns 8s ease-out forwards;
+  will-change: transform;
+}
+
+/* ── Nav link hover underline sweep ── */
+.nav-link-premium {
+  position: relative;
+}
+.nav-link-premium::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-brand);
+  transition: width 0.3s ease;
+  border-radius: 1px;
+}
+.nav-link-premium:hover::after {
+  width: 100%;
+}
+
+/* ── Premium CTA Arrow ── */
+.cta-arrow {
+  transition: transform 0.3s ease;
+}
+.group:hover .cta-arrow,
+a:hover .cta-arrow,
+button:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+/* ── Service Card Image Reveal ── */
+.service-card-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) brightness(0.15);
+  opacity: 0.25;
+  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.service-card:hover .service-card-image,
+.service-card:focus-within .service-card-image {
+  filter: grayscale(0%) brightness(0.7);
+  opacity: 0.9;
+  transform: scale(1.08);
+}
+
+/* Mobile: scroll-triggered reveal instead of hover */
+@media (hover: none) {
+  .service-card-image {
+    filter: grayscale(100%) brightness(0.15);
+    opacity: 0.25;
+    transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  .service-card.in-view .service-card-image {
+    filter: grayscale(0%) brightness(0.7);
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+  .service-card.in-view {
+    border-color: var(--color-border-hover);
+    box-shadow: 0 0 24px rgba(200, 164, 78, 0.18), 0 8px 32px rgba(0,0,0,0.4);
+  }
+}
+
+/* ── Gold glow on hover ── */
+.gold-glow:hover {
+  box-shadow: 0 0 20px rgba(200, 164, 78, 0.12), 0 8px 32px rgba(0,0,0,0.3);
+}
+
+/* ── Slide indicator active ── */
+.slide-dot-active {
+  background: var(--color-brand) !important;
+  box-shadow: 0 0 8px rgba(200, 164, 78, 0.4);
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-ken-burns {
+    animation: none !important;
+    transform: scale(1) !important;
+  }
+  .service-card-image {
+    filter: grayscale(0%) brightness(0.4) !important;
+    opacity: 0.6 !important;
+    transition: none !important;
+  }
 }

@@ -15,11 +15,11 @@ const FooterSection = () => {
           </FadeIn>
           
           <FadeIn delay={0.1} y={30} className="flex items-start gap-4">
-            <MapPin className="w-6 h-6 shrink-0 mt-1" />
+            <MapPin className="w-6 h-6 shrink-0 mt-1 text-brand" />
             <div className="flex flex-col">
               <span className="font-medium uppercase tracking-widest text-sm text-[#D7E2EA]/60 mb-1">Address</span>
               <p className="font-light text-lg sm:text-xl">
-                SRM Motors<br />
+                SRM AUTOMOTIVES<br />
                 #184, Renigunta Road<br />
                 S.V. Autonagar, Tirupati<br />
                 Andhra Pradesh
@@ -28,18 +28,18 @@ const FooterSection = () => {
           </FadeIn>
           
           <FadeIn delay={0.2} y={30} className="flex items-start gap-4">
-            <Phone className="w-6 h-6 shrink-0 mt-1" />
+            <Phone className="w-6 h-6 shrink-0 mt-1 text-brand" />
             <div className="flex flex-col">
               <span className="font-medium uppercase tracking-widest text-sm text-[#D7E2EA]/60 mb-1">Phone / 24/7 Towing</span>
-              <a href="tel:+918919594039" className="font-light text-lg sm:text-xl hover:text-white transition-colors">+91 8919594039</a>
+              <a href="tel:+918919594039" className="font-light text-lg sm:text-xl hover:text-brand transition-colors duration-300">+91 8919594039</a>
             </div>
           </FadeIn>
           
           <FadeIn delay={0.25} y={30} className="flex items-start gap-4">
-            <Mail className="w-6 h-6 shrink-0 mt-1" />
+            <Mail className="w-6 h-6 shrink-0 mt-1 text-brand" />
             <div className="flex flex-col">
               <span className="font-medium uppercase tracking-widest text-sm text-[#D7E2EA]/60 mb-1">Email</span>
-              <a href="mailto:Lokesh.lvrn@gimil.com" className="font-light text-lg sm:text-xl hover:text-white transition-colors break-all">Lokesh.lvrn@gimil.com</a>
+              <a href="mailto:Lokesh.lvrn@gimil.com" className="font-light text-lg sm:text-xl hover:text-brand transition-colors duration-300 break-all">Lokesh.lvrn@gimil.com</a>
             </div>
           </FadeIn>
           
@@ -48,7 +48,7 @@ const FooterSection = () => {
               href="https://wa.me/918919594039" 
               target="_blank" 
               rel="noreferrer"
-              className="inline-flex items-center gap-3 rounded-full border-2 border-[#D7E2EA] text-[#D7E2EA] font-medium uppercase tracking-widest px-8 py-3.5 hover:bg-[#D7E2EA]/10 transition-colors duration-300"
+              className="inline-flex items-center gap-3 rounded-full border-2 border-brand text-brand font-medium uppercase tracking-widest px-8 py-3.5 hover:bg-brand/10 transition-colors duration-300"
             >
               <MessageCircle className="w-5 h-5" />
               WhatsApp Us
@@ -74,7 +74,7 @@ const FooterSection = () => {
             href="https://maps.app.goo.gl/dnHpFsgdPKao7ALk7" 
             target="_blank" 
             rel="noreferrer"
-            className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-full border-2 border-[#D7E2EA] bg-[#0C0C0C]/80 backdrop-blur-md text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 hover:bg-[#D7E2EA] hover:text-[#0C0C0C] transition-colors duration-300 text-sm z-10 shadow-xl"
+            className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-full border-2 border-[#D7E2EA] bg-[#0C0C0C]/80 backdrop-blur-md text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 hover:bg-brand hover:text-black hover:border-brand transition-colors duration-300 text-sm z-10 shadow-xl"
           >
             <MapPin className="w-4 h-4" />
             Directions

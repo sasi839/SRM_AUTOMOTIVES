@@ -1,153 +1,120 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+
+import { useRef, useEffect, useCallback } from 'react';
 import { FadeIn } from './Reusable';
-import { galleryData } from '../data/galleryData';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  Wrench, Hammer, PaintBucket, Sparkles, Truck, 
+  Settings, Wind, LifeBuoy, Car, ShieldCheck, ArrowRight
+} from 'lucide-react';
 
 const services = [
-  { name: 'Mechanical Repairs', price: 'Starts at ₹999' },
-  { name: 'Tinkering', price: 'Starts at ₹1,499' },
-  { name: 'Painting', price: 'Starts at ₹2,999' },
-  { name: 'Teflon Coating', price: 'Starts at ₹3,499' },
-  { name: 'Roadside Towing', price: 'Starts at ₹1,999' },
-  { name: 'Spare Parts', price: 'Price on Inspection' }
+  { name: 'Mechanical Repairs', icon: Wrench, desc: 'Complete engine diagnostics and expert mechanical fixes.', image: 'https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?auto=format&fit=crop&w=800&q=80' },
+  { name: 'Tinkering', icon: Hammer, desc: 'Precision dent removal and structural auto body repairs.', image: 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=800&q=80' },
+  { name: 'Painting', icon: PaintBucket, desc: 'Premium color matching and full-body spray painting.', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=800&q=80' },
+  { name: 'Teflon Coating', icon: Sparkles, desc: 'Advanced surface protection for a long-lasting shine.', image: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=800&q=80' },
+  { name: 'A/C Repairs', icon: Wind, desc: 'Complete air conditioning service and refrigerant recharge.', image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80' },
+  { name: 'Insurance Claims', icon: ShieldCheck, desc: 'Hassle-free processing of accidental insurance claims.', image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80' },
+  { name: 'Roadside Assistance', icon: LifeBuoy, desc: 'Emergency support when you are stranded on the road.', image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80' },
+  { name: 'Breakdown Services', icon: Car, desc: 'On-spot troubleshooting for unexpected vehicle breakdowns.', image: 'https://images.unsplash.com/photo-1598257006458-087169a1f08d?auto=format&fit=crop&w=800&q=80' },
+  { name: 'Roadside Towing', icon: Truck, desc: 'Safe and secure vehicle towing to our service center.', image: 'https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=800&q=80' },
+  { name: 'Spare Parts', icon: Settings, desc: '100% genuine OEM spare parts for all major brands.', image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80' }
 ];
 
-export default function ServicesSection() {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+/* Individual card with scroll-triggered reveal for mobile */
+function ServiceCard({ service, index }: { service: typeof services[0]; index: number }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const IconComponent = service.icon;
 
-  const filteredImages = selectedCategory 
-    ? galleryData.filter(item => item.category === selectedCategory) 
-    : [];
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelectedCategory(null);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+  const handleIntersect = useCallback((entries: IntersectionObserverEntry[]) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+      } else {
+        entry.target.classList.remove('in-view');
+      }
+    });
   }, []);
 
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev + 1) % filteredImages.length);
-  };
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
 
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev - 1 + filteredImages.length) % filteredImages.length);
-  };
+    // Only observe on touch devices (no hover capability)
+    const isTouchDevice = window.matchMedia('(hover: none)').matches;
+    if (!isTouchDevice) return;
+
+    const observer = new IntersectionObserver(handleIntersect, {
+      threshold: 0.4,
+      rootMargin: '0px 0px -10% 0px',
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [handleIntersect]);
 
   return (
-    <section id="pricing" className="w-full bg-[#0C0C0C] py-20 md:py-32 px-6 md:px-10 relative">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12 md:gap-20">
+    <FadeIn delay={0.1 + (index * 0.05)} y={20} className="h-full">
+      <div
+        ref={cardRef}
+        className="service-card group relative overflow-hidden bg-surface border border-border rounded-2xl p-6 sm:p-8 min-h-[220px] flex flex-col justify-end hover:-translate-y-1 hover:border-border-hover transition-all duration-300 gold-glow cursor-pointer"
+      >
+        <img src={service.image} className="service-card-image" loading="lazy" alt={service.name} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10" />
+        <div className="relative z-20">
+          <div className="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4 group-hover:bg-brand/20 transition-colors duration-300">
+            <IconComponent className="w-5 h-5 text-brand" />
+          </div>
+          <h3 className="text-white text-lg md:text-xl font-semibold tracking-tight mb-2">
+            {service.name}
+          </h3>
+          <p className="text-white/50 font-light text-sm leading-relaxed group-hover:text-white/70 transition-colors duration-300">
+            {service.desc}
+          </p>
+        </div>
+      </div>
+    </FadeIn>
+  );
+}
+
+export default function ServicesSection() {
+  return (
+    <section id="services" className="w-full bg-[#0C0C0C] py-20 md:py-32 px-4 sm:px-6 md:px-10 relative">
+      <div className="max-w-7xl mx-auto flex flex-col gap-12 md:gap-16">
         
-        {/* Sticky Header */}
-        <div className="w-full md:w-1/3">
-          <div className="sticky top-32">
+        {/* Header */}
+        <div className="w-full text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex-1">
             <FadeIn delay={0.1} y={30}>
-              <h2 className="hero-heading font-black uppercase text-[clamp(2.5rem,8vw,100px)] leading-[0.9] tracking-tight">
-                Our <br/> Services
+              <h2 className="section-accent hero-heading font-black uppercase text-[clamp(2.5rem,8vw,80px)] leading-[0.9] tracking-tight text-white">
+                Our Services
               </h2>
             </FadeIn>
-            <FadeIn delay={0.3} y={30}>
-              <p className="mt-6 text-[#D7E2EA]/70 font-light text-lg">
-                Tap on any service below to view our past work in the gallery.
+            <FadeIn delay={0.2} y={30}>
+              <p className="mt-4 md:mt-6 text-[#D7E2EA]/80 font-light text-lg max-w-2xl">
+                Comprehensive automotive care delivered with precision and genuine parts.
               </p>
             </FadeIn>
           </div>
+          <FadeIn delay={0.3} className="hidden md:block">
+            <a href="#contact" className="inline-flex items-center gap-2 text-brand border-b-2 border-brand pb-1 font-medium tracking-wider uppercase hover:text-brand-light hover:border-brand-light transition-colors">
+              Book Appointment <ArrowRight className="w-4 h-4" />
+            </a>
+          </FadeIn>
         </div>
 
-        {/* Services List */}
-        <div className="w-full md:w-2/3 flex flex-col pt-4 md:pt-10 border-t border-[#D7E2EA/20]">
+        {/* Services Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 pt-4">
           {services.map((service, index) => (
-            <FadeIn key={index} delay={0.1 + (index * 0.1)} y={20}>
-              <div 
-                onClick={() => {
-                  setSelectedCategory(service.name);
-                  setCurrentImageIndex(0);
-                }}
-                className="group flex flex-col sm:flex-row sm:items-center justify-between py-8 border-b border-[#D7E2EA/20] cursor-pointer transition-all duration-300 hover:bg-[#D7E2EA/5] hover:px-4 -mx-4 px-4 rounded-xl"
-              >
-                <div className="flex flex-col gap-1">
-                  <h3 className="text-white text-2xl md:text-3xl font-medium tracking-tight group-hover:scale-[1.02] transition-transform origin-left">
-                    {service.name}
-                  </h3>
-                  <span className="text-[#D7E2EA]/50 text-sm font-light uppercase tracking-widest mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    View Gallery ↗
-                  </span>
-                </div>
-              </div>
-            </FadeIn>
+            <ServiceCard key={index} service={service} index={index} />
           ))}
         </div>
+        
+        {/* Mobile CTA */}
+        <div className="w-full flex justify-center md:hidden mt-4">
+          <a href="#contact" className="inline-flex items-center gap-2 bg-brand text-black px-6 py-3 rounded-full font-medium tracking-wider uppercase shadow-lg">
+            Book Appointment <ArrowRight className="w-4 h-4" />
+          </a>
+        </div>
+        
       </div>
-
-      {/* Lightbox Modal */}
-      <AnimatePresence>
-        {selectedCategory && filteredImages.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            onClick={() => setSelectedCategory(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#0C0C0C]/95 backdrop-blur-md p-4 md:p-10"
-          >
-            <button 
-              onClick={() => setSelectedCategory(null)}
-              className="absolute top-6 right-6 text-white/50 hover:text-white bg-[#D7E2EA/5] hover:bg-white/10 rounded-full p-3 transition-colors z-50"
-            >
-              <X size={24} />
-            </button>
-
-            <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-5xl aspect-video sm:aspect-[16/9] bg-[#D7E2EA/5] rounded-2xl overflow-hidden shadow-2xl border border-[#D7E2EA/20]"
-            >
-              <img 
-                src={filteredImages[currentImageIndex].imageUrl}
-                alt={filteredImages[currentImageIndex].caption}
-                className="w-full h-full object-cover"
-              />
-              
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 md:p-10">
-                <p className="text-[#D7E2EA] font-bold uppercase tracking-widest text-sm mb-2">
-                  {filteredImages[currentImageIndex].category}
-                </p>
-                <h3 className="text-white text-2xl md:text-4xl font-medium">
-                  {filteredImages[currentImageIndex].caption}
-                </h3>
-              </div>
-
-              {filteredImages.length > 1 && (
-                <>
-                  <button 
-                    onClick={handlePrev}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white rounded-full p-3 backdrop-blur-md transition-all border border-[#D7E2EA/20]"
-                  >
-                    <ChevronLeft size={24} />
-                  </button>
-                  <button 
-                    onClick={handleNext}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white rounded-full p-3 backdrop-blur-md transition-all border border-[#D7E2EA/20]"
-                  >
-                    <ChevronRight size={24} />
-                  </button>
-                  <div className="absolute top-6 left-6 bg-black/50 backdrop-blur-md text-white/80 text-sm px-3 py-1 rounded-full border border-[#D7E2EA/20]">
-                    {currentImageIndex + 1} / {filteredImages.length}
-                  </div>
-                </>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }
