@@ -2,45 +2,45 @@ import { FadeIn, AnimatedText, ContactButton } from './Reusable';
 
 const AboutSection = () => {
   return (
-    <section id="about" className="min-h-screen relative flex flex-col items-center justify-center px-5 sm:px-8 md:px-10 py-20 overflow-hidden">
+    <section id="about" className="min-h-screen relative flex flex-col items-center justify-center px-4 sm:px-8 md:px-10 py-16 md:py-20 overflow-hidden">
       
       {/* Decorative Images */}
-      <FadeIn delay={0.1} x={-80} y={0} duration={0.9} className="absolute top-[4%] left-[1%] sm:left-[2%] md:left-[4%]">
+      <FadeIn delay={0.1} x={-80} y={0} duration={0.9} className="absolute top-[2%] sm:top-[4%] left-1 sm:left-[2%] md:left-[4%]">
         <img 
           src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=300&q=80" 
           alt="Garage" 
-          className="w-[120px] sm:w-[160px] md:w-[210px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
+          className="w-[50px] sm:w-[160px] md:w-[210px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
       
-      <FadeIn delay={0.15} x={80} y={0} duration={0.9} className="absolute top-[4%] right-[1%] sm:right-[2%] md:right-[4%]">
+      <FadeIn delay={0.15} x={80} y={0} duration={0.9} className="absolute top-[2%] sm:top-[4%] right-1 sm:right-[2%] md:right-[4%]">
         <img 
           src="https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?auto=format&fit=crop&w=300&q=80" 
           alt="Engine" 
-          className="w-[120px] sm:w-[160px] md:w-[210px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
+          className="w-[50px] sm:w-[160px] md:w-[210px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
       
-      <FadeIn delay={0.25} x={-80} y={0} duration={0.9} className="absolute bottom-[8%] left-[3%] sm:left-[6%] md:left-[10%]">
+      <FadeIn delay={0.25} x={-80} y={0} duration={0.9} className="absolute bottom-[4%] sm:bottom-[8%] left-1 sm:left-[6%] md:left-[10%]">
         <img 
           src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=300&q=80" 
           alt="Wheel" 
-          className="w-[100px] sm:w-[140px] md:w-[180px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
+          className="w-[45px] sm:w-[140px] md:w-[180px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
       
-      <FadeIn delay={0.3} x={80} y={0} duration={0.9} className="absolute bottom-[8%] right-[3%] sm:right-[6%] md:right-[10%]">
+      <FadeIn delay={0.3} x={80} y={0} duration={0.9} className="absolute bottom-[4%] sm:bottom-[8%] right-1 sm:right-[6%] md:right-[10%]">
         <img 
           src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=300&q=80" 
           alt="Tools" 
-          className="w-[130px] sm:w-[170px] md:w-[220px] rounded-[30px] object-cover aspect-square opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
+          className="w-[60px] sm:w-[170px] md:w-[220px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
 
       {/* Content */}
       <div className="flex flex-col items-center text-center z-10 w-full max-w-4xl mx-auto">
         <FadeIn delay={0} y={40} className="mb-10 sm:mb-14 md:mb-16 w-full">
-          <h2 className="hero-heading section-accent section-accent-center font-black uppercase leading-none tracking-tight text-[clamp(3rem,12vw,160px)]">
+          <h2 className="hero-heading section-accent section-accent-center font-black uppercase leading-none tracking-tight text-[clamp(2.5rem,12vw,160px)]">
             About Us
           </h2>
         </FadeIn>
@@ -48,7 +48,7 @@ const AboutSection = () => {
         {/* Short punchy Animated Text */}
         <AnimatedText 
           text="SRM Automotives began with a simple idea: car care shouldn't feel like a hassle." 
-          className="text-white font-medium leading-relaxed max-w-2xl text-[clamp(1.2rem,2.5vw,1.8rem)] mb-10"
+          className="text-white font-medium leading-relaxed max-w-2xl text-[clamp(1.1rem,2.5vw,1.8rem)] mb-10"
         />
 
         {/* Clear detailed paragraphs using FadeIn to prevent browser lag from thousands of spans */}

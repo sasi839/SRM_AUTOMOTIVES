@@ -36,11 +36,11 @@ const FeaturesGridSection = () => {
   ];
 
   return (
-    <section className="bg-[#0C0C0C] text-[#D7E2EA] px-5 sm:px-8 md:px-10 py-20 sm:py-24 md:py-32 relative z-10">
+    <section className="bg-[#0C0C0C] text-[#D7E2EA] px-5 sm:px-8 md:px-10 py-12 sm:py-20 md:py-32 relative z-10">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         
         <FadeIn delay={0} y={40} className="mb-16 md:mb-24 text-center w-full">
-          <h2 className="hero-heading font-black uppercase text-[clamp(2.5rem,8vw,100px)] leading-none text-center">
+          <h2 className="hero-heading font-black uppercase text-[clamp(2rem,8vw,100px)] leading-none text-center">
             Our Services
           </h2>
         </FadeIn>
@@ -51,7 +51,7 @@ const FeaturesGridSection = () => {
               key={feature.title} 
               delay={0.1 + (idx * 0.1)} 
               y={30} 
-              className="flex flex-col items-center text-center p-8 rounded-3xl bg-[#D7E2EA]/5 border border-[#D7E2EA]/10 hover:bg-[#D7E2EA]/10 transition-colors duration-300"
+              className="flex flex-col items-center text-center p-6 sm:p-8 rounded-3xl bg-[#D7E2EA]/5 border border-[#D7E2EA]/10 hover:bg-[#D7E2EA]/10 transition-colors duration-300"
             >
               {feature.icon}
               <h3 className="font-medium text-xl md:text-2xl uppercase tracking-wider mb-3 text-white">

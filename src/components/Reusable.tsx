@@ -1,11 +1,11 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
 
 export const ContactButton = () => {
   return (
     <a 
       href="#contact"
-      className="inline-flex items-center justify-center rounded-full text-white font-medium uppercase tracking-widest px-8 py-3 sm:px-10 sm:py-3.5 md:px-12 md:py-4 text-xs sm:text-sm md:text-base outline-none transition-all duration-300 hover:scale-105 hover:-translate-y-0.5 active:scale-95"
+      className="inline-flex items-center justify-center rounded-full text-white font-medium uppercase tracking-widest px-6 py-2.5 sm:px-10 sm:py-3.5 md:px-12 md:py-4 text-xs sm:text-sm md:text-base outline-none transition-all duration-300 hover:scale-105 hover:-translate-y-0.5 active:scale-95"
       style={{
         background: 'linear-gradient(135deg, #1a1a1a 0%, #C8A44E 50%, #9A7B35 100%)',
         boxShadow: '0 4px 15px rgba(200, 164, 78, 0.3)'
@@ -26,8 +26,21 @@ export const LiveProjectButton = () => {
   );
 };
 
+/* Motion component cache — components must not be created during render,
+   otherwise React remounts them on every render (resetting state/animations). */
+const motionComponentCache = new Map<string, ReturnType<typeof motion.create>>();
+
+const getMotionComponent = (tag: string) => {
+  let Component = motionComponentCache.get(tag);
+  if (!Component) {
+    Component = motion.create(tag as any);
+    motionComponentCache.set(tag, Component);
+  }
+  return Component;
+};
+
 export const FadeIn = ({ children, delay = 0, duration = 0.7, x = 0, y = 30, className = '', as = 'div' }: any) => {
-  const Component = motion.create(as as any);
+  const Component = getMotionComponent(as);
   
   return (
     <Component
@@ -85,6 +98,23 @@ export const Magnet = ({ children, padding = 150, strength = 3, activeTransition
   );
 };
 
+/* Single animated character.
+   Extracted into its own component so useTransform is called at the top level
+   of a component instead of inside Array.map (Rules of Hooks). */
+const AnimatedChar = ({ char, progress, start, end }: { char: string, progress: MotionValue<number>, start: number, end: number }) => {
+  const opacity = useTransform(progress, [start, end], [0.2, 1]);
+  const display = char === ' ' ? '\u00A0' : char;
+
+  return (
+    <span className="relative">
+      <span className="invisible">{display}</span>
+      <motion.span className="absolute top-0 left-0" style={{ opacity }}>
+        {display}
+      </motion.span>
+    </span>
+  );
+};
+
 export const AnimatedText = ({ text, className = '' }: { text: string, className?: string }) => {
   const containerRef = useRef<HTMLParagraphElement>(null);
   const { scrollYProgress } = useScroll({
@@ -99,14 +129,8 @@ export const AnimatedText = ({ text, className = '' }: { text: string, className
       {characters.map((char, i) => {
         const start = i / characters.length;
         const end = start + (1 / characters.length);
-        const opacity = useTransform(scrollYProgress, [start, end], [0.2, 1]);
         return (
-          <span key={i} className="relative">
-            <span className="invisible">{char === ' ' ? '\u00A0' : char}</span>
-            <motion.span className="absolute top-0 left-0" style={{ opacity }}>
-              {char === ' ' ? '\u00A0' : char}
-            </motion.span>
-          </span>
+          <AnimatedChar key={i} char={char} progress={scrollYProgress} start={start} end={end} />
         );
       })}
     </p>

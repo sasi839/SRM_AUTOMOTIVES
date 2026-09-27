@@ -51,12 +51,12 @@ const MarqueeSection = () => {
     <section ref={sectionRef} className="bg-[#0C0C0C] pt-24 sm:pt-32 md:pt-40 pb-10 overflow-hidden flex flex-col gap-3">
       <div ref={row1Ref} className="flex gap-3 w-max" style={{ willChange: 'transform' }}>
         {tripledRow1.map((src, i) => (
-          <img key={i} src={src} alt="Project Preview" className="w-[420px] h-[270px] rounded-2xl object-cover" loading="lazy" />
+          <img key={i} src={src} alt="Project Preview" className="w-[280px] h-[180px] sm:w-[420px] sm:h-[270px] rounded-2xl object-cover" loading="lazy" />
         ))}
       </div>
       <div ref={row2Ref} className="flex gap-3 w-max" style={{ willChange: 'transform' }}>
         {tripledRow2.map((src, i) => (
-          <img key={i} src={src} alt="Project Preview" className="w-[420px] h-[270px] rounded-2xl object-cover" loading="lazy" />
+          <img key={i} src={src} alt="Project Preview" className="w-[280px] h-[180px] sm:w-[420px] sm:h-[270px] rounded-2xl object-cover" loading="lazy" />
         ))}
       </div>
     </section>

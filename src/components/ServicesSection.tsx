@@ -54,18 +54,18 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
     <FadeIn delay={0.1 + (index * 0.05)} y={20} className="h-full">
       <div
         ref={cardRef}
-        className="service-card group relative overflow-hidden bg-surface border border-border rounded-2xl p-6 sm:p-8 min-h-[220px] flex flex-col justify-end hover:-translate-y-1 hover:border-border-hover transition-all duration-300 gold-glow cursor-pointer"
+        className="service-card group relative overflow-hidden bg-surface border border-border rounded-2xl p-3 sm:p-8 aspect-square sm:aspect-auto sm:min-h-[220px] flex flex-col justify-end hover:-translate-y-1 hover:border-border-hover transition-all duration-300 gold-glow cursor-pointer"
       >
         <img src={service.image} className="service-card-image" loading="lazy" alt={service.name} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10" />
         <div className="relative z-20">
-          <div className="w-10 h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-4 group-hover:bg-brand/20 transition-colors duration-300">
-            <IconComponent className="w-5 h-5 text-brand" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-2 sm:mb-4 group-hover:bg-brand/20 transition-colors duration-300">
+            <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 text-brand" />
           </div>
-          <h3 className="text-white text-lg md:text-xl font-semibold tracking-tight mb-2">
+          <h3 className="text-white text-sm sm:text-base md:text-xl font-semibold tracking-tight mb-1 sm:mb-2 leading-tight">
             {service.name}
           </h3>
-          <p className="text-white/50 font-light text-sm leading-relaxed group-hover:text-white/70 transition-colors duration-300">
+          <p className="text-white/50 font-light text-[10px] sm:text-xs md:text-sm leading-[1.2] sm:leading-relaxed line-clamp-2 sm:line-clamp-none group-hover:text-white/70 transition-colors duration-300">
             {service.desc}
           </p>
         </div>
@@ -76,21 +76,16 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
 
 export default function ServicesSection() {
   return (
-    <section id="services" className="w-full bg-[#0C0C0C] py-20 md:py-32 px-4 sm:px-6 md:px-10 relative">
+    <section id="services" className="w-full bg-[#0C0C0C] py-12 sm:py-16 md:py-32 px-4 sm:px-6 md:px-10 relative">
       <div className="max-w-7xl mx-auto flex flex-col gap-12 md:gap-16">
         
         {/* Header */}
         <div className="w-full text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex-1">
             <FadeIn delay={0.1} y={30}>
-              <h2 className="section-accent hero-heading font-black uppercase text-[clamp(2.5rem,8vw,80px)] leading-[0.9] tracking-tight text-white">
+              <h2 className="section-accent hero-heading font-black uppercase text-[clamp(2rem,8vw,80px)] leading-[0.9] tracking-tight text-white">
                 Our Services
               </h2>
-            </FadeIn>
-            <FadeIn delay={0.2} y={30}>
-              <p className="mt-4 md:mt-6 text-[#D7E2EA]/80 font-light text-lg max-w-2xl">
-                Comprehensive automotive care delivered with precision and genuine parts.
-              </p>
             </FadeIn>
           </div>
           <FadeIn delay={0.3} className="hidden md:block">
@@ -101,7 +96,7 @@ export default function ServicesSection() {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 pt-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 pt-4">
           {services.map((service, index) => (
             <ServiceCard key={index} service={service} index={index} />
           ))}

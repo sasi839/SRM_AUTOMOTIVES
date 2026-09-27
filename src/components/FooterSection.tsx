@@ -3,7 +3,7 @@ import { MapPin, Phone, MessageCircle, Mail } from 'lucide-react';
 
 const FooterSection = () => {
   return (
-    <footer id="contact" className="bg-[#0C0C0C] text-[#D7E2EA] px-5 sm:px-8 md:px-10 py-16 sm:py-24 border-t border-[#D7E2EA]/10 relative z-20">
+    <footer id="contact" className="bg-[#0C0C0C] text-[#D7E2EA] px-4 sm:px-8 md:px-10 py-12 sm:py-24 border-t border-[#D7E2EA]/10 relative z-20">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12 md:gap-20">
         
         {/* Contact Info */}
@@ -57,7 +57,7 @@ const FooterSection = () => {
         </div>
         
         {/* Google Maps Embed */}
-        <FadeIn delay={0.4} y={30} className="flex-1 w-full h-[350px] sm:h-[450px] rounded-3xl overflow-hidden border-2 border-[#D7E2EA]/20 relative">
+        <div className="flex-1 w-full min-h-[300px] h-[300px] sm:min-h-[450px] sm:h-[450px] rounded-3xl overflow-hidden border-2 border-[#D7E2EA]/20 relative shrink-0">
           <iframe 
             src="https://www.google.com/maps?q=184,+Renigunta+Road,+S.V.+Autonagar,+Tirupati&output=embed" 
             width="100%" 
@@ -74,12 +74,12 @@ const FooterSection = () => {
             href="https://maps.app.goo.gl/dnHpFsgdPKao7ALk7" 
             target="_blank" 
             rel="noreferrer"
-            className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-full border-2 border-[#D7E2EA] bg-[#0C0C0C]/80 backdrop-blur-md text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-2.5 hover:bg-brand hover:text-black hover:border-brand transition-colors duration-300 text-sm z-10 shadow-xl"
+            className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-full border-2 border-[#D7E2EA] bg-[#0C0C0C]/90 backdrop-blur-md text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-3 hover:bg-brand hover:text-black hover:border-brand transition-colors duration-300 text-sm z-10 shadow-xl"
           >
             <MapPin className="w-4 h-4" />
             Directions
           </a>
-        </FadeIn>
+        </div>
 
       </div>
     </footer>

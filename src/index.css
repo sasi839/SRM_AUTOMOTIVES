@@ -123,7 +123,7 @@ button:hover .cta-arrow {
   .service-card-image {
     filter: grayscale(100%) brightness(0.15);
     opacity: 0.25;
-    transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+    transition: all 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   .service-card.in-view .service-card-image {
     filter: grayscale(0%) brightness(0.7);
@@ -133,6 +133,7 @@ button:hover .cta-arrow {
   .service-card.in-view {
     border-color: var(--color-border-hover);
     box-shadow: 0 0 24px rgba(200, 164, 78, 0.18), 0 8px 32px rgba(0,0,0,0.4);
+    transition: all 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 }
 
