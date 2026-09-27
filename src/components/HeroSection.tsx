@@ -59,8 +59,8 @@ const HeroSection = () => {
         <div className="flex justify-between items-center px-4 md:px-10 py-3 max-w-7xl mx-auto">
           {/* Logo / Brand */}
           <div className="flex items-center">
-             <a href="#" className="text-white font-black text-xl md:text-2xl tracking-widest uppercase">
-               SRM
+             <a href="#" className="block">
+               <img src="/srm-logo.png" alt="SRM Automotives" className="h-10 sm:h-11 md:h-12 w-auto object-contain" />
              </a>
           </div>
 
@@ -115,8 +115,8 @@ const HeroSection = () => {
             className="fixed inset-0 z-50 bg-[#0C0C0C] flex flex-col md:hidden pointer-events-auto"
           >
             <div className="flex justify-between items-center px-4 py-4 border-b border-white/10">
-              <a href="#" onClick={() => setIsMobileMenuOpen(false)} className="text-white font-black text-xl tracking-widest uppercase">
-                SRM
+              <a href="#" onClick={() => setIsMobileMenuOpen(false)} className="block">
+                <img src="/srm-logo.png" alt="SRM Automotives" className="h-10 w-auto object-contain" />
               </a>
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}
