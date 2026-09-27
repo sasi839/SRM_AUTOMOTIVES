@@ -26,25 +26,9 @@ export const LiveProjectButton = () => {
   );
 };
 
-/* Motion component cache — components must not be created during render,
-   otherwise React remounts them on every render (resetting state/animations). */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const motionComponentCache = new Map<string, any>();
-
-const getMotionComponent = (tag: string) => {
-  let Component = motionComponentCache.get(tag);
-  if (!Component) {
-    Component = motion.create(tag as any);
-    motionComponentCache.set(tag, Component);
-  }
-  return Component as React.ComponentType<any>;
-};
-
-export const FadeIn = ({ children, delay = 0, duration = 0.7, x = 0, y = 30, className = '', as = 'div' }: any) => {
-  const Component = getMotionComponent(as);
-  
+export const FadeIn = ({ children, delay = 0, duration = 0.7, x = 0, y = 30, className = '' }: any) => {
   return (
-    <Component
+    <motion.div
       className={className}
       initial={{ opacity: 0, x, y }}
       whileInView={{ opacity: 1, x: 0, y: 0 }}
@@ -52,7 +36,7 @@ export const FadeIn = ({ children, delay = 0, duration = 0.7, x = 0, y = 30, cla
       transition={{ delay, duration, ease: [0.25, 0.1, 0.25, 1] }}
     >
       {children}
-    </Component>
+    </motion.div>
   );
 };
 
