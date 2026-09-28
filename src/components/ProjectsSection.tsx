@@ -1,10 +1,10 @@
-
 import { useRef, useEffect, useCallback } from 'react';
 import { FadeIn } from './Reusable';
-import { galleryData } from '../data/galleryData';
+import { useSiteData } from '../context/SiteDataContext';
+import type { PublicGalleryItem } from '../context/SiteDataContext';
 
 /* Individual gallery card with scroll-triggered reveal for mobile (same as ServiceCard) */
-function GalleryCard({ item, index }: { item: typeof galleryData[0]; index: number }) {
+function GalleryCard({ item, index }: { item: PublicGalleryItem; index: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleIntersect = useCallback((entries: IntersectionObserverEntry[]) => {
@@ -45,7 +45,7 @@ function GalleryCard({ item, index }: { item: typeof galleryData[0]; index: numb
           className="service-card-image"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0C0C0C] via-[#0C0C0C]/40 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#141418] via-[#141418]/40 to-transparent z-10" />
         <div className="absolute bottom-0 left-0 p-3 sm:p-6 z-20">
           <p className="text-brand text-[10px] sm:text-sm font-semibold tracking-widest uppercase mb-1">
             {item.category}
@@ -60,8 +60,10 @@ function GalleryCard({ item, index }: { item: typeof galleryData[0]; index: numb
 }
 
 export default function ProjectsSection() {
+  const { galleryItems } = useSiteData();
+
   return (
-    <section id="gallery" className="w-full bg-[#0C0C0C] py-12 sm:py-20 md:py-32 px-4 sm:px-6 md:px-10">
+    <section id="gallery" className="w-full bg-[#141418] py-12 sm:py-20 md:py-32 px-4 sm:px-6 md:px-10">
       <div className="max-w-7xl mx-auto">
         <FadeIn delay={0} y={40} className="mb-16">
           <h2 className="hero-heading section-accent font-black uppercase leading-none tracking-tight text-[clamp(2.25rem,8vw,100px)] text-white">
@@ -70,8 +72,8 @@ export default function ProjectsSection() {
         </FadeIn>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8">
-          {galleryData.map((item, index) => (
-            <GalleryCard key={item.id} item={item} index={index} />
+          {galleryItems.map((item, index) => (
+            <GalleryCard key={item.id || index} item={item} index={index} />
           ))}
         </div>
       </div>

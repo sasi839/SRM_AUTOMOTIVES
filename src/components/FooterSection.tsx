@@ -1,9 +1,21 @@
 import { FadeIn } from './Reusable';
 import { MapPin, Phone, MessageCircle, Mail } from 'lucide-react';
+import { useSiteData } from '../context/SiteDataContext';
 
 const FooterSection = () => {
+  const { businessContent } = useSiteData();
+
+  const phoneHref = `tel:${businessContent.primary_phone || '+918919594039'}`;
+  const mailHref = `mailto:${businessContent.email || 'Lokesh.lvrn@gimil.com'}`;
+  const whatsappHref = `https://wa.me/${businessContent.whatsapp_number || '918919594039'}`;
+  const directionsUrl = businessContent.google_maps_url || 'https://maps.app.goo.gl/dnHpFsgdPKao7ALk7';
+
+  // Format address text for display
+  const addressLines = (businessContent.address || 'SRM AUTOMOTIVES\n#184, Renigunta Road\nS.V. Autonagar, Tirupati\nAndhra Pradesh')
+    .split('\n');
+
   return (
-    <footer id="contact" className="bg-[#0C0C0C] text-[#D7E2EA] px-4 sm:px-8 md:px-10 py-12 sm:py-24 border-t border-[#D7E2EA]/10 relative z-20">
+    <footer id="contact" className="bg-[#141418] text-[#D7E2EA] px-4 sm:px-8 md:px-10 py-12 sm:py-24 border-t border-[#D7E2EA]/10 relative z-20">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12 md:gap-20">
         
         {/* Contact Info */}
@@ -19,10 +31,12 @@ const FooterSection = () => {
             <div className="flex flex-col">
               <span className="font-medium uppercase tracking-widest text-sm text-[#D7E2EA]/60 mb-1">Address</span>
               <p className="font-light text-lg sm:text-xl">
-                SRM AUTOMOTIVES<br />
-                #184, Renigunta Road<br />
-                S.V. Autonagar, Tirupati<br />
-                Andhra Pradesh
+                {addressLines.map((line, idx) => (
+                  <span key={idx}>
+                    {line}
+                    {idx < addressLines.length - 1 && <br />}
+                  </span>
+                ))}
               </p>
             </div>
           </FadeIn>
@@ -31,7 +45,9 @@ const FooterSection = () => {
             <Phone className="w-6 h-6 shrink-0 mt-1 text-brand" />
             <div className="flex flex-col">
               <span className="font-medium uppercase tracking-widest text-sm text-[#D7E2EA]/60 mb-1">Phone / 24/7 Towing</span>
-              <a href="tel:+918919594039" className="font-light text-lg sm:text-xl hover:text-brand transition-colors duration-300">+91 8919594039</a>
+              <a href={phoneHref} className="font-light text-lg sm:text-xl hover:text-brand transition-colors duration-300">
+                {businessContent.primary_phone || '+91 8919594039'}
+              </a>
             </div>
           </FadeIn>
           
@@ -39,13 +55,15 @@ const FooterSection = () => {
             <Mail className="w-6 h-6 shrink-0 mt-1 text-brand" />
             <div className="flex flex-col">
               <span className="font-medium uppercase tracking-widest text-sm text-[#D7E2EA]/60 mb-1">Email</span>
-              <a href="mailto:Lokesh.lvrn@gimil.com" className="font-light text-lg sm:text-xl hover:text-brand transition-colors duration-300 break-all">Lokesh.lvrn@gimil.com</a>
+              <a href={mailHref} className="font-light text-lg sm:text-xl hover:text-brand transition-colors duration-300 break-all">
+                {businessContent.email || 'Lokesh.lvrn@gimil.com'}
+              </a>
             </div>
           </FadeIn>
           
           <FadeIn delay={0.3} y={30} className="mt-4">
             <a 
-              href="https://wa.me/918919594039" 
+              href={whatsappHref} 
               target="_blank" 
               rel="noreferrer"
               className="inline-flex items-center gap-3 rounded-full border-2 border-brand text-brand font-medium uppercase tracking-widest px-8 py-3.5 hover:bg-brand/10 transition-colors duration-300"
@@ -71,10 +89,10 @@ const FooterSection = () => {
           
           {/* Get Directions Button Overlaid on Map */}
           <a 
-            href="https://maps.app.goo.gl/dnHpFsgdPKao7ALk7" 
+            href={directionsUrl} 
             target="_blank" 
             rel="noreferrer"
-            className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-full border-2 border-[#D7E2EA] bg-[#0C0C0C]/90 backdrop-blur-md text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-3 hover:bg-brand hover:text-black hover:border-brand transition-colors duration-300 text-sm z-10 shadow-xl"
+            className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-full border-2 border-[#D7E2EA] bg-[#141418]/90 backdrop-blur-md text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-3 hover:bg-brand hover:text-black hover:border-brand transition-colors duration-300 text-sm z-10 shadow-xl"
           >
             <MapPin className="w-4 h-4" />
             Directions

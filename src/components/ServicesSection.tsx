@@ -1,26 +1,11 @@
-
 import { useRef, useEffect, useCallback } from 'react';
 import { FadeIn } from './Reusable';
-import { 
-  Wrench, Hammer, PaintBucket, Sparkles, Truck, 
-  Settings, Wind, LifeBuoy, Car, ShieldCheck, ArrowRight
-} from 'lucide-react';
-
-const services = [
-  { name: 'Mechanical Repairs', icon: Wrench, desc: 'Complete engine diagnostics and expert mechanical fixes.', image: 'https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?auto=format&fit=crop&w=800&q=80' },
-  { name: 'Tinkering', icon: Hammer, desc: 'Precision dent removal and structural auto body repairs.', image: 'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=800&q=80' },
-  { name: 'Painting', icon: PaintBucket, desc: 'Premium color matching and full-body spray painting.', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=800&q=80' },
-  { name: 'Teflon Coating', icon: Sparkles, desc: 'Advanced surface protection for a long-lasting shine.', image: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=800&q=80' },
-  { name: 'A/C Repairs', icon: Wind, desc: 'Complete air conditioning service and refrigerant recharge.', image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80' },
-  { name: 'Insurance Claims', icon: ShieldCheck, desc: 'Hassle-free processing of accidental insurance claims.', image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80' },
-  { name: 'Roadside Assistance', icon: LifeBuoy, desc: 'Emergency support when you are stranded on the road.', image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80' },
-  { name: 'Breakdown Services', icon: Car, desc: 'On-spot troubleshooting for unexpected vehicle breakdowns.', image: 'https://images.unsplash.com/photo-1598257006458-087169a1f08d?auto=format&fit=crop&w=800&q=80' },
-  { name: 'Roadside Towing', icon: Truck, desc: 'Safe and secure vehicle towing to our service center.', image: 'https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=800&q=80' },
-  { name: 'Spare Parts', icon: Settings, desc: '100% genuine OEM spare parts for all major brands.', image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80' }
-];
+import { useSiteData } from '../context/SiteDataContext';
+import type { PublicServiceItem } from '../context/SiteDataContext';
+import { ArrowRight } from 'lucide-react';
 
 /* Individual card with scroll-triggered reveal for mobile */
-function ServiceCard({ service, index }: { service: typeof services[0]; index: number }) {
+function ServiceCard({ service, index }: { service: PublicServiceItem; index: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const IconComponent = service.icon;
 
@@ -75,8 +60,10 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
 }
 
 export default function ServicesSection() {
+  const { services } = useSiteData();
+
   return (
-    <section id="services" className="w-full bg-[#0C0C0C] py-12 sm:py-16 md:py-32 px-4 sm:px-6 md:px-10 relative">
+    <section id="services" className="w-full bg-[#141418] py-12 sm:py-16 md:py-32 px-4 sm:px-6 md:px-10 relative">
       <div className="max-w-7xl mx-auto flex flex-col gap-12 md:gap-16">
         
         {/* Header */}
@@ -98,7 +85,7 @@ export default function ServicesSection() {
         {/* Services Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 pt-4">
           {services.map((service, index) => (
-            <ServiceCard key={index} service={service} index={index} />
+            <ServiceCard key={service.name || index} service={service} index={index} />
           ))}
         </div>
         

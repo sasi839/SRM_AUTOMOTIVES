@@ -36,7 +36,7 @@ const FeaturesGridSection = () => {
   ];
 
   return (
-    <section className="bg-[#0C0C0C] text-[#D7E2EA] px-5 sm:px-8 md:px-10 py-12 sm:py-20 md:py-32 relative z-10">
+    <section className="bg-[#141418] text-[#D7E2EA] px-5 sm:px-8 md:px-10 py-12 sm:py-20 md:py-32 relative z-10">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         
         <FadeIn delay={0} y={40} className="mb-16 md:mb-24 text-center w-full">
