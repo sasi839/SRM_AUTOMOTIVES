@@ -100,6 +100,17 @@ const FooterSection = () => {
         </div>
 
       </div>
+      
+      {/* Bottom Bar */}
+      <div className="max-w-7xl mx-auto mt-12 md:mt-20 pt-6 border-t border-[#D7E2EA]/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-light text-[#D7E2EA]/40">
+        <p>&copy; {new Date().getFullYear()} SRM Automotives. All rights reserved.</p>
+        <a 
+          href="/admin" 
+          className="hover:text-brand transition-colors duration-300 flex items-center gap-1"
+        >
+          <span className="opacity-50 hover:opacity-100 transition-opacity">Admin Login</span>
+        </a>
+      </div>
     </footer>
   );
 };
