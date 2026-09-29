@@ -1,13 +1,31 @@
 import { FadeIn, AnimatedText, ContactButton } from './Reusable';
+import { useSiteData } from '../context/SiteDataContext';
 
 const AboutSection = () => {
+  const { aboutItems } = useSiteData();
+
+  // Fallback defaults if DB is empty
+  const defaultImages = [
+    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=300&q=80",
+    "https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?auto=format&fit=crop&w=300&q=80",
+    "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=300&q=80",
+    "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=300&q=80"
+  ];
+
+  const getImgSrc = (index: number) => {
+     if (aboutItems && aboutItems.length > index) {
+       return aboutItems[index].imageUrl;
+     }
+     return defaultImages[index];
+  };
+
   return (
     <section id="about" className="min-h-screen relative flex flex-col items-center justify-center px-4 sm:px-8 md:px-10 py-16 md:py-20 overflow-hidden">
       
       {/* Decorative Images */}
       <FadeIn delay={0.1} x={-80} y={0} duration={0.9} className="absolute top-[2%] sm:top-[4%] left-1 sm:left-[2%] md:left-[4%]">
         <img 
-          src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=300&q=80" 
+          src={getImgSrc(0)} 
           alt="Garage" 
           className="w-[50px] sm:w-[160px] md:w-[210px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
@@ -15,7 +33,7 @@ const AboutSection = () => {
       
       <FadeIn delay={0.15} x={80} y={0} duration={0.9} className="absolute top-[2%] sm:top-[4%] right-1 sm:right-[2%] md:right-[4%]">
         <img 
-          src="https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?auto=format&fit=crop&w=300&q=80" 
+          src={getImgSrc(1)} 
           alt="Engine" 
           className="w-[50px] sm:w-[160px] md:w-[210px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
@@ -23,7 +41,7 @@ const AboutSection = () => {
       
       <FadeIn delay={0.25} x={-80} y={0} duration={0.9} className="absolute bottom-[4%] sm:bottom-[8%] left-1 sm:left-[6%] md:left-[10%]">
         <img 
-          src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=300&q=80" 
+          src={getImgSrc(2)} 
           alt="Wheel" 
           className="w-[45px] sm:w-[140px] md:w-[180px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
@@ -31,7 +49,7 @@ const AboutSection = () => {
       
       <FadeIn delay={0.3} x={80} y={0} duration={0.9} className="absolute bottom-[4%] sm:bottom-[8%] right-1 sm:right-[6%] md:right-[10%]">
         <img 
-          src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=300&q=80" 
+          src={getImgSrc(3)} 
           alt="Tools" 
           className="w-[60px] sm:w-[170px] md:w-[220px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />

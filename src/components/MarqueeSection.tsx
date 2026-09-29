@@ -1,6 +1,8 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
+import { useSiteData } from '../context/SiteDataContext';
+import { FadeIn } from './Reusable';
 
-const imagesRow1 = [
+const defaultImagesRow1 = [
   { src: "https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?auto=format&fit=crop&w=800&q=80", label: "Engine Bay" },
   { src: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80", label: "Performance Tuning" },
   { src: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80", label: "Luxury Sedan" },
@@ -12,23 +14,7 @@ const imagesRow1 = [
   { src: "https://images.unsplash.com/photo-1611016186353-9af58c69a533?auto=format&fit=crop&w=800&q=80", label: "Sport Edition" }
 ];
 
-const imagesRow2 = [
-  { src: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=800&q=80", label: "Classic Restore" },
-  { src: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&w=800&q=80", label: "SUV Service" },
-  { src: "https://images.unsplash.com/photo-1504222490345-c075b6008014?auto=format&fit=crop&w=800&q=80", label: "Garage View" },
-  { src: "https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=800&q=80", label: "Interior Care" },
-  { src: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80", label: "Emergency Ready" },
-  { src: "https://images.unsplash.com/photo-1600707328902-60144d18728d?auto=format&fit=crop&w=800&q=80", label: "Premium Polish" },
-  { src: "https://images.unsplash.com/photo-1598506847895-71be8eb84a3b?auto=format&fit=crop&w=800&q=80", label: "Paint Studio" },
-  { src: "https://images.unsplash.com/photo-1635425032549-065a3962b13c?auto=format&fit=crop&w=800&q=80", label: "Quality Parts" },
-  { src: "https://images.unsplash.com/photo-1563720225384-9c0f129710b7?auto=format&fit=crop&w=800&q=80", label: "Track Ready" }
-];
-
-const tripledRow1 = [...imagesRow1, ...imagesRow1, ...imagesRow1];
-const tripledRow2 = [...imagesRow2, ...imagesRow2, ...imagesRow2];
-
-/* Individual marquee card with scroll-triggered reveal for mobile */
-function MarqueeCard({ item }: { item: { src: string; label: string } }) {
+function StaticCard({ item, index }: { item: { src: string; label: string }; index: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleIntersect = useCallback((entries: IntersectionObserverEntry[]) => {
@@ -49,65 +35,58 @@ function MarqueeCard({ item }: { item: { src: string; label: string } }) {
     if (!isTouchDevice) return;
 
     const observer = new IntersectionObserver(handleIntersect, {
-      threshold: 0.3,
-      rootMargin: '0px 0px -5% 0px',
+      threshold: 0.4,
+      rootMargin: '0px 0px -10% 0px',
     });
     observer.observe(el);
     return () => observer.disconnect();
   }, [handleIntersect]);
 
   return (
-    <div
-      ref={cardRef}
-      className="marquee-card group flex-shrink-0 w-[200px] h-[140px] sm:w-[280px] sm:h-[190px] md:w-[320px] md:h-[210px] cursor-pointer"
-    >
-      <img
-        src={item.src}
-        alt={item.label}
-        className="marquee-card-image"
-        loading="lazy"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
-      <div className="absolute bottom-0 left-0 p-2 sm:p-4 z-20">
-        <p className="text-white text-[10px] sm:text-xs md:text-sm font-medium tracking-wider uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-          {item.label}
-        </p>
+    <FadeIn delay={0.1 + (index * 0.05)} y={20} className="w-full h-full">
+      <div
+        ref={cardRef}
+        className="service-card group relative aspect-square sm:aspect-[4/3] rounded-2xl overflow-hidden bg-[#D7E2EA]/5 border border-border hover:border-border-hover transition-all duration-300 gold-glow cursor-pointer"
+      >
+        <img 
+          src={item.src} 
+          alt={item.label} 
+          className="service-card-image"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1c1c21] via-[#1c1c21]/40 to-transparent z-10" />
+        <div className="absolute bottom-0 left-0 p-3 sm:p-6 z-20">
+          <p className="text-white text-sm sm:text-lg md:text-xl font-medium leading-tight sm:leading-normal">
+            {item.label}
+          </p>
+        </div>
       </div>
-    </div>
+    </FadeIn>
   );
 }
 
 const MarqueeSection = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const row1Ref = useRef<HTMLDivElement>(null);
-  const row2Ref = useRef<HTMLDivElement>(null);
+  const { marqueeItems } = useSiteData();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current || !row1Ref.current || !row2Ref.current) return;
-      const sectionTop = sectionRef.current.offsetTop;
-      const offset = (window.scrollY - sectionTop + window.innerHeight) * 0.3;
-      
-      row1Ref.current.style.transform = `translate3d(${offset - 200}px, 0, 0)`;
-      row2Ref.current.style.transform = `translate3d(${-(offset - 200)}px, 0, 0)`;
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // init
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Combine dynamic items or fallback to defaults
+  const displayItems = (!marqueeItems || marqueeItems.length === 0)
+    ? defaultImagesRow1
+    : marqueeItems.map(item => ({ src: item.imageUrl, label: item.caption }));
 
   return (
-    <section ref={sectionRef} className="bg-[#141418] pt-24 sm:pt-32 md:pt-40 pb-10 overflow-hidden flex flex-col gap-4 sm:gap-5">
-      <div ref={row1Ref} className="flex gap-3 sm:gap-4 w-max" style={{ willChange: 'transform' }}>
-        {tripledRow1.map((item, i) => (
-          <MarqueeCard key={i} item={item} />
-        ))}
-      </div>
-      <div ref={row2Ref} className="flex gap-3 sm:gap-4 w-max" style={{ willChange: 'transform' }}>
-        {tripledRow2.map((item, i) => (
-          <MarqueeCard key={i} item={item} />
-        ))}
+    <section id="highlights" className="bg-[#1c1c21] py-12 sm:py-20 md:py-32 px-4 sm:px-6 md:px-10 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <FadeIn delay={0} y={40} className="mb-12 sm:mb-16">
+          <h2 className="hero-heading section-accent font-black uppercase leading-none tracking-tight text-[clamp(2.25rem,8vw,100px)] text-white">
+            Highlights
+          </h2>
+        </FadeIn>
+        
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-8">
+          {displayItems.map((item, i) => (
+            <StaticCard key={`marquee-${i}`} item={item} index={i} />
+          ))}
+        </div>
       </div>
     </section>
   );

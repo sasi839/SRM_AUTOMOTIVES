@@ -34,11 +34,12 @@ import {
 
 export const AdminDashboard: React.FC = () => {
   const { user, signOut } = useAuth();
-  const [activeTab, setActiveTab] = useState<'business' | 'hero' | 'services' | 'gallery'>('business');
+  const [activeTab, setActiveTab] = useState<'business' | 'hero' | 'services' | 'gallery' | 'marquee' | 'about' | 'whyus'>('business');
   
   // Status messages
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [saving, setSaving] = useState(false);
+  const fetchLock = React.useRef(false);
 
   // Business Content State
   const [content, setContent] = useState<SiteContent>({
@@ -72,6 +73,12 @@ export const AdminDashboard: React.FC = () => {
   const [newGalleryFile, setNewGalleryFile] = useState<File | null>(null);
   const [uploadingGallery, setUploadingGallery] = useState(false);
 
+  // New Service Form State
+  const [newServiceTitle, setNewServiceTitle] = useState('');
+  const [newServiceSubtitle, setNewServiceSubtitle] = useState('');
+  const [newServiceFile, setNewServiceFile] = useState<File | null>(null);
+  const [uploadingService, setUploadingService] = useState(false);
+
 
   // Confirmation Modal State
   const [deleteConfirmItem, setDeleteConfirmItem] = useState<SiteImage | null>(null);
@@ -84,6 +91,8 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const fetchSiteData = async () => {
+    if (fetchLock.current) return;
+    fetchLock.current = true;
     try {
       // Fetch Business Content
       const { data: contentData } = await supabase
@@ -144,97 +153,50 @@ export const AdminDashboard: React.FC = () => {
         { section: 'gallery', title: 'Performance Upgrades', category: 'Spare Parts', image_url: 'https://images.unsplash.com/photo-1598257006458-087169a1f08d?auto=format&fit=crop&w=800&q=80', display_order: 12, is_active: true }
       ];
 
-      // Auto-seed default hero slides if empty
+      // In-memory fallbacks if database table has 0 items (No automatic DB insertions!)
       if (heroes.length === 0) {
-        try {
-          const { data: insertedData } = await supabase
-            .from('site_images')
-            .insert(defaultSlides as never)
-            .select();
-
-          if (insertedData && insertedData.length > 0) {
-            heroes = insertedData as SiteImage[];
-          }
-        } catch (e) {
-          console.warn('Auto seed hero note:', e);
-        }
-
-        if (heroes.length === 0) {
-          heroes = defaultSlides.map((s, idx) => ({
-            id: `default-hero-${idx}`,
-            section: 'hero',
-            title: s.title,
-            subtitle: s.subtitle,
-            category: null,
-            image_url: s.image_url,
-            display_order: s.display_order,
-            is_active: s.is_active,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          }));
-        }
+        heroes = defaultSlides.map((s, idx) => ({
+          id: `default-hero-${idx}`,
+          section: 'hero',
+          title: s.title,
+          subtitle: s.subtitle,
+          category: null,
+          image_url: s.image_url,
+          display_order: s.display_order,
+          is_active: s.is_active,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }));
       }
 
-      // Auto-seed default services if empty
       if (servs.length === 0) {
-        try {
-          const { data: insertedServs } = await supabase
-            .from('site_images')
-            .insert(defaultServices as never)
-            .select();
-
-          if (insertedServs && insertedServs.length > 0) {
-            servs = insertedServs as SiteImage[];
-          }
-        } catch (e) {
-          console.warn('Auto seed services note:', e);
-        }
-
-        if (servs.length === 0) {
-          servs = defaultServices.map((s, idx) => ({
-            id: `default-service-${idx}`,
-            section: 'service',
-            title: s.title,
-            subtitle: s.subtitle,
-            category: null,
-            image_url: s.image_url,
-            display_order: s.display_order,
-            is_active: s.is_active,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          }));
-        }
+        servs = defaultServices.map((s, idx) => ({
+          id: `default-service-${idx}`,
+          section: 'service',
+          title: s.title,
+          subtitle: s.subtitle,
+          category: null,
+          image_url: s.image_url,
+          display_order: s.display_order,
+          is_active: s.is_active,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }));
       }
 
-      // Auto-seed default gallery if empty
       if (gall.length === 0) {
-        try {
-          const { data: insertedGall } = await supabase
-            .from('site_images')
-            .insert(defaultGallery as never)
-            .select();
-
-          if (insertedGall && insertedGall.length > 0) {
-            gall = insertedGall as SiteImage[];
-          }
-        } catch (e) {
-          console.warn('Auto seed gallery note:', e);
-        }
-
-        if (gall.length === 0) {
-          gall = defaultGallery.map((g, idx) => ({
-            id: `default-gallery-${idx}`,
-            section: 'gallery',
-            title: g.title,
-            subtitle: null,
-            category: g.category,
-            image_url: g.image_url,
-            display_order: g.display_order,
-            is_active: g.is_active,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          }));
-        }
+        gall = defaultGallery.map((g, idx) => ({
+          id: `default-gallery-${idx}`,
+          section: 'gallery',
+          title: g.title,
+          subtitle: null,
+          category: g.category,
+          image_url: g.image_url,
+          display_order: g.display_order,
+          is_active: g.is_active,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }));
       }
 
       setHeroSlides(heroes);
@@ -242,6 +204,8 @@ export const AdminDashboard: React.FC = () => {
       setGalleryItems(gall);
     } catch (err: unknown) {
       console.error('Error fetching site data:', err);
+    } finally {
+      fetchLock.current = false;
     }
   };
 
@@ -293,9 +257,9 @@ export const AdminDashboard: React.FC = () => {
         if (data) setContent(data as SiteContent);
       }
 
-      showFeedback('success', 'Business information updated successfully!');
+      showFeedback('success', 'Business information updated successfully in the online cloud database!');
     } catch (err: unknown) {
-      showFeedback('error', err instanceof Error ? err.message : 'Failed to update business content.');
+      showFeedback('error', (err as any).message || 'Failed to update business content.');
     } finally {
       setSaving(false);
     }
@@ -320,10 +284,10 @@ export const AdminDashboard: React.FC = () => {
       const res = await replaceWebsiteImage(item.id, file, folder);
       if (res.error) throw res.error;
 
-      showFeedback('success', 'Image replaced successfully!');
+      showFeedback('success', 'Image replaced successfully in the online cloud database!');
       fetchSiteData();
     } catch (err: unknown) {
-      showFeedback('error', err instanceof Error ? err.message : 'Failed to replace image.');
+      showFeedback('error', (err as any).message || 'Failed to replace image.');
     } finally {
       setSaving(false);
     }
@@ -363,10 +327,10 @@ export const AdminDashboard: React.FC = () => {
         if (error) throw error;
       }
 
-      showFeedback('success', `Saved changes for "${item.title || item.id}"`);
+      showFeedback('success', `Success! Changes for "${item.title || item.id}" have been updated in the online cloud database.`);
       fetchSiteData();
     } catch (err: unknown) {
-      showFeedback('error', err instanceof Error ? err.message : 'Failed to update record.');
+      showFeedback('error', (err as any).message || 'Failed to update record.');
     } finally {
       setSaving(false);
     }
@@ -392,9 +356,9 @@ export const AdminDashboard: React.FC = () => {
         supabase.from('site_images').update({ display_order: itemB.display_order } as never).eq('id', itemB.id),
       ]);
       fetchSiteData();
-      showFeedback('success', 'Display order updated!');
+      showFeedback('success', 'Display order updated in the online cloud database!');
     } catch (err: unknown) {
-      showFeedback('error', err instanceof Error ? err.message : 'Failed to reorder items.');
+      showFeedback('error', (err as any).message || 'Failed to reorder items.');
     } finally {
       setSaving(false);
     }
@@ -436,20 +400,20 @@ export const AdminDashboard: React.FC = () => {
 
       if (insertError) throw insertError;
 
-      showFeedback('success', 'New Hero slide uploaded and added to Supabase!');
+      showFeedback('success', 'New Hero slide added to the online cloud database!');
       setNewHeroTitle('');
       setNewHeroSubtitle('');
       setNewHeroFile(null);
       fetchSiteData();
     } catch (err: unknown) {
-      showFeedback('error', err instanceof Error ? err.message : 'Failed to add hero slide.');
+      showFeedback('error', (err as any).message || 'Failed to add hero slide.');
     } finally {
       setUploadingHero(false);
     }
   };
 
   // 6. ADD NEW GALLERY IMAGE
-  const handleAddGalleryImage = async (e: React.FormEvent) => {
+  const handleAddGalleryImage = async (e: React.FormEvent, overrideCategory?: string) => {
     e.preventDefault();
     if (!newGalleryFile) {
       showFeedback('error', 'Please select an image file to upload.');
@@ -476,7 +440,8 @@ export const AdminDashboard: React.FC = () => {
       const { error: insertError } = await supabase.from('site_images').insert({
         section: 'gallery',
         title: newGalleryTitle || 'Gallery Image',
-        category: newGalleryCategory,
+        category: overrideCategory || newGalleryCategory,
+        subtitle: overrideCategory === 'WhyUs' ? newHeroSubtitle : null,
         image_url: uploadRes.publicUrl,
         display_order: nextOrder,
         is_active: true,
@@ -484,18 +449,67 @@ export const AdminDashboard: React.FC = () => {
 
       if (insertError) throw insertError;
 
-      showFeedback('success', 'New gallery image added successfully!');
+      showFeedback('success', 'New item added successfully to the online cloud database!');
       setNewGalleryTitle('');
+      setNewHeroSubtitle('');
       setNewGalleryFile(null);
       fetchSiteData();
     } catch (err: unknown) {
-      showFeedback('error', err instanceof Error ? err.message : 'Failed to add gallery image.');
+      showFeedback('error', (err as any).message || 'Failed to add gallery image.');
     } finally {
       setUploadingGallery(false);
     }
   };
 
-  // 7. CONFIRMED DELETE ITEM (Hero or Gallery)
+  // 7.5 ADD NEW SERVICE
+  const handleAddService = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newServiceFile) {
+      showFeedback('error', 'Please select an image file for the new service.');
+      return;
+    }
+
+    const val = validateImageFile(newServiceFile);
+    if (!val.valid) {
+      showFeedback('error', val.error || 'Invalid image file.');
+      return;
+    }
+
+    setUploadingService(true);
+    try {
+      const uploadRes = await uploadWebsiteImage(newServiceFile, 'services');
+      if (uploadRes.error || !uploadRes.publicUrl) {
+        throw uploadRes.error || new Error('Upload failed');
+      }
+
+      const nextOrder = services.length > 0
+        ? Math.max(...services.map((s) => s.display_order)) + 1
+        : 1;
+
+      const { error: insertError } = await supabase.from('site_images').insert({
+        section: 'service',
+        title: newServiceTitle || 'New Service',
+        subtitle: newServiceSubtitle || '',
+        image_url: uploadRes.publicUrl,
+        display_order: nextOrder,
+        is_active: true,
+      } as never);
+
+      if (insertError) throw insertError;
+
+      showFeedback('success', 'New service added to the online cloud database!');
+      setNewServiceTitle('');
+      setNewServiceSubtitle('');
+      setNewServiceFile(null);
+      fetchSiteData();
+    } catch (err: unknown) {
+      showFeedback('error', (err as any).message || 'Failed to add service.');
+    } finally {
+      setUploadingService(false);
+    }
+  };
+
+  // 8. CONFIRMED DELETE ITEM (Hero, Service, or Gallery)
   const executeDeleteItem = async () => {
     if (!deleteConfirmItem) return;
 
@@ -504,13 +518,19 @@ export const AdminDashboard: React.FC = () => {
     setSaving(true);
 
     try {
+      // Don't try to delete default in-memory items
+      if (item.id.startsWith('default-')) {
+        showFeedback('error', 'Cannot delete a default placeholder item. Add real items first, then remove defaults.');
+        return;
+      }
+
       const res = await deleteWebsiteImage(item.id);
       if (res.error) throw res.error;
 
-      showFeedback('success', `Deleted "${item.title || 'item'}" successfully!`);
+      showFeedback('success', `Deleted "${item.title || 'item'}" from the online cloud database!`);
       fetchSiteData();
     } catch (err: unknown) {
-      showFeedback('error', err instanceof Error ? err.message : 'Failed to delete item.');
+      showFeedback('error', (err as any).message || 'Failed to delete item.');
     } finally {
       setSaving(false);
     }
@@ -523,11 +543,9 @@ export const AdminDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#0C0C0C] text-[#D7E2EA] flex flex-col font-sans">
       {/* Header */}
-      <header className="bg-[#121212] border-b border-[#D7E2EA]/10 px-4 sm:px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+      <header className="bg-gradient-to-r from-[#121212] via-[#141414] to-[#121212] border-b border-[#E5B549]/10 px-4 sm:px-8 py-4 flex items-center justify-between sticky top-0 z-50 shadow-lg shadow-black/20">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#E5B549]/10 border border-[#E5B549]/30 flex items-center justify-center text-[#E5B549] font-bold text-lg">
-            SRM
-          </div>
+          <img src="/srm-logo.png" alt="SRM Automotives" className="h-9 sm:h-10 w-auto object-contain drop-shadow-md" />
           <div>
             <h1 className="text-lg font-black uppercase tracking-wider text-white">
               SRM AUTOMOTIVES
@@ -556,7 +574,7 @@ export const AdminDashboard: React.FC = () => {
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-8 flex flex-col gap-6">
         {/* OVERVIEW METRICS CARDS (Requirement 1) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-4 flex flex-col justify-between">
+          <div className="bg-gradient-to-br from-[#121212] to-[#0f1a12] border border-emerald-500/15 rounded-2xl p-4 flex flex-col justify-between hover:border-emerald-500/30 transition-colors">
             <div className="flex items-center justify-between text-xs font-semibold text-[#D7E2EA]/60 uppercase tracking-wider">
               <span>System Status</span>
               <Activity className="w-4 h-4 text-emerald-400" />
@@ -567,7 +585,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-4 flex flex-col justify-between">
+          <div className="bg-gradient-to-br from-[#121212] to-[#181510] border border-[#E5B549]/15 rounded-2xl p-4 flex flex-col justify-between hover:border-[#E5B549]/30 transition-colors">
             <div className="flex items-center justify-between text-xs font-semibold text-[#D7E2EA]/60 uppercase tracking-wider">
               <span>Hero Slides</span>
               <Images className="w-4 h-4 text-[#E5B549]" />
@@ -577,7 +595,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-4 flex flex-col justify-between">
+          <div className="bg-gradient-to-br from-[#121212] to-[#101318] border border-blue-400/15 rounded-2xl p-4 flex flex-col justify-between hover:border-blue-400/30 transition-colors">
             <div className="flex items-center justify-between text-xs font-semibold text-[#D7E2EA]/60 uppercase tracking-wider">
               <span>Services</span>
               <Wrench className="w-4 h-4 text-blue-400" />
@@ -587,7 +605,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-4 flex flex-col justify-between">
+          <div className="bg-gradient-to-br from-[#121212] to-[#151018] border border-purple-400/15 rounded-2xl p-4 flex flex-col justify-between hover:border-purple-400/30 transition-colors">
             <div className="flex items-center justify-between text-xs font-semibold text-[#D7E2EA]/60 uppercase tracking-wider">
               <span>Our Works</span>
               <Grid className="w-4 h-4 text-purple-400" />
@@ -663,7 +681,41 @@ export const AdminDashboard: React.FC = () => {
             }`}
           >
             <Grid className="w-4 h-4" />
-            Our Works ({galleryItems.length})
+            Our Works ({galleryItems.filter(g => g.category !== 'Marquee').length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('marquee')}
+            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              activeTab === 'marquee'
+                ? 'bg-[#E5B549] text-black shadow-lg shadow-[#E5B549]/20'
+                : 'bg-[#1A1A1A] text-[#D7E2EA]/70 hover:text-white border border-[#D7E2EA]/10'
+            }`}
+          >
+            <Grid className="w-4 h-4" />
+            Marquee Slider ({galleryItems.filter(g => g.category === 'Marquee').length})
+          </button>
+          <button
+            onClick={() => setActiveTab('about')}
+            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              activeTab === 'about'
+                ? 'bg-[#E5B549] text-black shadow-lg shadow-[#E5B549]/20'
+                : 'bg-[#1A1A1A] text-[#D7E2EA]/70 hover:text-white border border-[#D7E2EA]/10'
+            }`}
+          >
+            <Grid className="w-4 h-4" />
+            About ({galleryItems.filter(g => g.category === 'About').length})
+          </button>
+          <button
+            onClick={() => setActiveTab('whyus')}
+            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              activeTab === 'whyus'
+                ? 'bg-[#E5B549] text-black shadow-lg shadow-[#E5B549]/20'
+                : 'bg-[#1A1A1A] text-[#D7E2EA]/70 hover:text-white border border-[#D7E2EA]/10'
+            }`}
+          >
+            <Grid className="w-4 h-4" />
+            Why Us ({galleryItems.filter(g => g.category === 'WhyUs').length})
           </button>
         </div>
 
@@ -997,29 +1049,155 @@ export const AdminDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 3: SERVICES IMAGES */}
+        {/* TAB 3: SERVICES */}
         {activeTab === 'services' && (
           <div className="flex flex-col gap-6">
             <div className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-6">
               <h2 className="text-xl font-bold uppercase text-white tracking-wide flex items-center gap-2">
                 <Wrench className="w-5 h-5 text-[#E5B549]" />
-                Service Cards Image Manager
+                Services Manager
               </h2>
               <p className="text-xs text-[#D7E2EA]/60 mt-1">
-                Replace images for individual service cards independently.
+                Add, edit, reorder, replace images, and manage all services.
               </p>
             </div>
 
+            {/* Add New Service Form */}
+            <div className="bg-[#161616] border border-[#E5B549]/30 rounded-2xl p-6 flex flex-col gap-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-[#E5B549] flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                Add New Service
+              </h3>
+
+              <form onSubmit={handleAddService} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D7E2EA]/80">
+                    Service Title
+                  </label>
+                  <input
+                    type="text"
+                    disabled={uploadingService}
+                    placeholder="e.g. Wheel Alignment"
+                    value={newServiceTitle}
+                    onChange={(e) => setNewServiceTitle(e.target.value)}
+                    required
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D7E2EA]/80">
+                    Description
+                  </label>
+                  <input
+                    type="text"
+                    disabled={uploadingService}
+                    placeholder="e.g. Precision alignment for smooth driving"
+                    value={newServiceSubtitle}
+                    onChange={(e) => setNewServiceSubtitle(e.target.value)}
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D7E2EA]/80">
+                    Service Image
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={uploadingService}
+                    onChange={(e) => setNewServiceFile(e.target.files?.[0] || null)}
+                    required
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+                </div>
+
+                <div className="md:col-span-3 flex justify-end mt-2">
+                  <button
+                    type="submit"
+                    disabled={uploadingService}
+                    className="bg-[#E5B549] text-black font-bold uppercase tracking-wider text-xs px-6 py-3 rounded-xl hover:bg-[#f0c25c] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  >
+                    {uploadingService ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Adding Service...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4" />
+                        Add Service
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Services Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {services.map((service, index) => (
                 <div
                   key={service.id}
-                  className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-6 flex flex-col gap-4"
+                  className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-6 flex flex-col gap-4 hover:border-[#D7E2EA]/20 transition-colors"
                 >
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-white uppercase text-base tracking-wide">
-                      {service.title || `Service #${index + 1}`}
-                    </h3>
+                  <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-[#D7E2EA]/20 bg-black">
+                    <img src={service.image_url} alt={service.title || 'Service'} className="w-full h-full object-cover" />
+                    <div className="absolute top-2 left-2 bg-black/80 px-2 py-1 rounded text-[10px] font-bold text-[#E5B549] uppercase">
+                      Order #{service.display_order}
+                    </div>
+                  </div>
+
+                  {/* Editable Title */}
+                  <input
+                    type="text"
+                    disabled={saving}
+                    value={service.title || ''}
+                    onChange={(e) => {
+                      const updated = [...services];
+                      updated[index].title = e.target.value;
+                      setServices(updated);
+                    }}
+                    placeholder="Service Title"
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-4 py-2.5 text-white font-bold focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+
+                  {/* Editable Description */}
+                  <textarea
+                    rows={2}
+                    disabled={saving}
+                    value={service.subtitle || ''}
+                    onChange={(e) => {
+                      const updated = [...services];
+                      updated[index].subtitle = e.target.value;
+                      setServices(updated);
+                    }}
+                    placeholder="Service Description"
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-4 py-2.5 text-xs text-[#D7E2EA] focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+
+                  {/* Actions Row */}
+                  <div className="flex items-center justify-between gap-2 border-t border-[#D7E2EA]/10 pt-4">
+                    <div className="flex items-center gap-1">
+                      <button
+                        disabled={index === 0 || saving}
+                        onClick={() => handleMoveOrder(services, index, 'up')}
+                        className="p-2 rounded-lg bg-[#1A1A1A] border border-[#D7E2EA]/20 hover:text-[#E5B549] disabled:opacity-30 text-xs"
+                        title="Move Up"
+                      >
+                        <ArrowUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        disabled={index === services.length - 1 || saving}
+                        onClick={() => handleMoveOrder(services, index, 'down')}
+                        className="p-2 rounded-lg bg-[#1A1A1A] border border-[#D7E2EA]/20 hover:text-[#E5B549] disabled:opacity-30 text-xs"
+                        title="Move Down"
+                      >
+                        <ArrowDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
                     <button
                       disabled={saving}
                       onClick={() => {
@@ -1034,20 +1212,13 @@ export const AdminDashboard: React.FC = () => {
                           : 'bg-zinc-800 border-zinc-700 text-zinc-500'
                       }`}
                     >
+                      {service.is_active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                       {service.is_active ? 'Active' : 'Inactive'}
                     </button>
-                  </div>
 
-                  <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-[#D7E2EA]/20 bg-black">
-                    <img src={service.image_url} alt={service.title || 'Service'} className="w-full h-full object-cover" />
-                  </div>
-
-                  <p className="text-xs text-[#D7E2EA]/70 italic">{service.subtitle}</p>
-
-                  <div className="flex items-center gap-3 pt-2">
-                    <label className="flex-1 cursor-pointer bg-[#1A1A1A] border border-[#D7E2EA]/20 hover:border-[#E5B549] text-white px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2">
-                      <Upload className="w-4 h-4 text-[#E5B549]" />
-                      Replace Image
+                    <label className="cursor-pointer bg-[#1A1A1A] border border-[#D7E2EA]/20 hover:border-[#E5B549] text-white px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                      <Upload className="w-3.5 h-3.5 text-[#E5B549]" />
+                      Replace
                       <input
                         type="file"
                         accept="image/*"
@@ -1064,10 +1235,19 @@ export const AdminDashboard: React.FC = () => {
                     <button
                       disabled={saving}
                       onClick={() => handleSaveImageRecord(service)}
-                      className="bg-[#E5B549] text-black font-bold uppercase text-xs px-4 py-2.5 rounded-xl hover:bg-[#f0c25c] flex items-center gap-1.5 disabled:opacity-50"
+                      className="bg-[#E5B549] text-black font-bold uppercase text-xs p-2 rounded-lg hover:bg-[#f0c25c] disabled:opacity-50"
+                      title="Save"
                     >
                       {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                      Save
+                    </button>
+
+                    <button
+                      disabled={saving}
+                      onClick={() => setDeleteConfirmItem(service)}
+                      className="bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white p-2 rounded-lg text-xs disabled:opacity-50"
+                      title="Delete Service"
+                    >
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -1171,7 +1351,7 @@ export const AdminDashboard: React.FC = () => {
 
             {/* Gallery Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {galleryItems.map((item, index) => (
+              {galleryItems.filter(item => item.category !== 'Marquee').map((item, index) => (
                 <div
                   key={item.id}
                   className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-5 flex flex-col gap-4 justify-between"
@@ -1256,6 +1436,502 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* TAB 5: MARQUEE SLIDER */}
+        {activeTab === 'marquee' && (
+          <div className="flex flex-col gap-6">
+            <div className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold uppercase text-white tracking-wide flex items-center gap-2">
+                  <Grid className="w-5 h-5 text-[#E5B549]" />
+                  Marquee Slider Manager
+                </h2>
+                <p className="text-xs text-[#D7E2EA]/60 mt-1">
+                  Add new slider images, replace existing images, reorder items, or delete entries.
+                </p>
+              </div>
+            </div>
+
+            {/* Form to Add New Marquee Image */}
+            <div className="bg-[#161616] border border-[#E5B549]/30 rounded-2xl p-6 flex flex-col gap-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-[#E5B549] flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                Add New Marquee Image
+              </h3>
+
+              <form 
+                onSubmit={(e) => {
+                  handleAddGalleryImage(e, 'Marquee');
+                }} 
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end"
+              >
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D7E2EA]/80">
+                    Image Label / Title
+                  </label>
+                  <input
+                    type="text"
+                    disabled={uploadingGallery}
+                    placeholder="e.g. Performance Tuning"
+                    value={newGalleryTitle}
+                    onChange={(e) => setNewGalleryTitle(e.target.value)}
+                    required
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D7E2EA]/80">
+                    Upload Image File
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={uploadingGallery}
+                    onChange={(e) => setNewGalleryFile(e.target.files?.[0] || null)}
+                    required
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+                </div>
+
+                <div className="md:col-span-2 flex justify-end mt-2">
+                  <button
+                    type="submit"
+                    disabled={uploadingGallery}
+                    className="bg-[#E5B549] text-black font-bold uppercase tracking-wider text-xs px-6 py-3 rounded-xl hover:bg-[#f0c25c] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  >
+                    {uploadingGallery ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Uploading Image...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4" />
+                        Add Marquee Image
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Marquee Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {galleryItems.filter(item => item.category === 'Marquee').map((item, index) => (
+                <div
+                  key={item.id}
+                  className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-5 flex flex-col gap-4 justify-between"
+                >
+                  <div className="flex flex-col gap-3">
+                    <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-[#D7E2EA]/20 bg-black">
+                      <img src={item.image_url} alt={item.title || 'Marquee'} className="w-full h-full object-cover" />
+                      <div className="absolute top-2 left-2 bg-black/80 px-2 py-1 rounded text-[10px] font-bold text-[#E5B549] uppercase">
+                        #{item.display_order} • Slider
+                      </div>
+                    </div>
+
+                    <input
+                      type="text"
+                      disabled={saving}
+                      value={item.title || ''}
+                      onChange={(e) => {
+                        const globalIndex = galleryItems.findIndex(g => g.id === item.id);
+                        if (globalIndex === -1) return;
+                        const updated = [...galleryItems];
+                        updated[globalIndex].title = e.target.value;
+                        setGalleryItems(updated);
+                      }}
+                      className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-3 py-2 text-white font-bold text-sm focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 border-t border-[#D7E2EA]/10 pt-4">
+                    <div className="flex items-center gap-1">
+                      <button
+                        disabled={index === 0 || saving}
+                        onClick={() => handleMoveOrder(galleryItems, galleryItems.findIndex(g => g.id === item.id), 'up')}
+                        className="p-2 rounded-lg bg-[#1A1A1A] border border-[#D7E2EA]/20 hover:text-[#E5B549] disabled:opacity-30 text-xs"
+                        title="Move Up"
+                      >
+                        <ArrowUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        disabled={index === galleryItems.filter(g => g.category === 'Marquee').length - 1 || saving}
+                        onClick={() => handleMoveOrder(galleryItems, galleryItems.findIndex(g => g.id === item.id), 'down')}
+                        className="p-2 rounded-lg bg-[#1A1A1A] border border-[#D7E2EA]/20 hover:text-[#E5B549] disabled:opacity-30 text-xs"
+                        title="Move Down"
+                      >
+                        <ArrowDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <label className="cursor-pointer bg-[#1A1A1A] border border-[#D7E2EA]/20 hover:border-[#E5B549] text-white px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                      <Upload className="w-3.5 h-3.5 text-[#E5B549]" />
+                      Replace
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={saving}
+                        className="hidden"
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            handleImageReplace(item, 'gallery', e.target.files[0]);
+                          }
+                        }}
+                      />
+                    </label>
+
+                    <button
+                      disabled={saving}
+                      onClick={() => handleSaveImageRecord(item)}
+                      className="bg-[#E5B549] text-black font-bold uppercase text-xs p-2 rounded-lg hover:bg-[#f0c25c] disabled:opacity-50"
+                      title="Save"
+                    >
+                      {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    </button>
+
+                    <button
+                      disabled={saving}
+                      onClick={() => setDeleteConfirmItem(item)}
+                      className="bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white p-2 rounded-lg text-xs disabled:opacity-50"
+                      title="Delete Item"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 6: ABOUT US */}
+        {activeTab === 'about' && (
+          <div className="flex flex-col gap-6">
+            <div className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold uppercase text-white tracking-wide flex items-center gap-2">
+                  <Grid className="w-5 h-5 text-[#E5B549]" />
+                  About Us Images
+                </h2>
+                <p className="text-xs text-[#D7E2EA]/60 mt-1">
+                  Manage the 4 decorative floating images in the About Us section.
+                </p>
+              </div>
+            </div>
+
+            {/* Form to Add New About Image */}
+            <div className="bg-[#161616] border border-[#E5B549]/30 rounded-2xl p-6 flex flex-col gap-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-[#E5B549] flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                Add New About Image
+              </h3>
+
+              <form 
+                onSubmit={(e) => handleAddGalleryImage(e, 'About')} 
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end"
+              >
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D7E2EA]/80">
+                    Image Label (Internal)
+                  </label>
+                  <input
+                    type="text"
+                    disabled={uploadingGallery}
+                    placeholder="e.g. Garage Exterior"
+                    value={newGalleryTitle}
+                    onChange={(e) => setNewGalleryTitle(e.target.value)}
+                    required
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D7E2EA]/80">
+                    Upload Image File
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={uploadingGallery}
+                    onChange={(e) => setNewGalleryFile(e.target.files?.[0] || null)}
+                    required
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+                </div>
+
+                <div className="md:col-span-2 flex justify-end mt-2">
+                  <button
+                    type="submit"
+                    disabled={uploadingGallery}
+                    className="bg-[#E5B549] text-black font-bold uppercase tracking-wider text-xs px-6 py-3 rounded-xl hover:bg-[#f0c25c] transition-colors flex items-center gap-2 disabled:opacity-50"
+                  >
+                    {uploadingGallery ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4" />
+                        Add About Image
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* About Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {galleryItems.filter(item => item.category === 'About').map(item => (
+                <div
+                  key={item.id}
+                  className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-5 flex flex-col gap-4 justify-between"
+                >
+                  <div className="flex flex-col gap-3">
+                    <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-[#D7E2EA]/20 bg-black">
+                      <img src={item.image_url} alt={item.title || 'About'} className="w-full h-full object-cover opacity-60 mix-blend-luminosity" />
+                      <div className="absolute top-2 left-2 bg-black/80 px-2 py-1 rounded text-[10px] font-bold text-[#E5B549] uppercase">
+                        #{item.display_order} • About
+                      </div>
+                    </div>
+
+                    <input
+                      type="text"
+                      disabled={saving}
+                      value={item.title || ''}
+                      onChange={(e) => {
+                        const globalIndex = galleryItems.findIndex(g => g.id === item.id);
+                        if (globalIndex === -1) return;
+                        const updated = [...galleryItems];
+                        updated[globalIndex].title = e.target.value;
+                        setGalleryItems(updated);
+                      }}
+                      className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-3 py-2 text-white font-bold text-sm focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 border-t border-[#D7E2EA]/10 pt-4">
+                    <label className="cursor-pointer bg-[#1A1A1A] border border-[#D7E2EA]/20 hover:border-[#E5B549] text-white px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1 w-full justify-center">
+                      <Upload className="w-3.5 h-3.5 text-[#E5B549]" />
+                      Replace
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={saving}
+                        className="hidden"
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            handleImageReplace(item, 'gallery', e.target.files[0]);
+                          }
+                        }}
+                      />
+                    </label>
+
+                    <button
+                      disabled={saving}
+                      onClick={() => handleSaveImageRecord(item)}
+                      className="bg-[#E5B549] text-black p-2 rounded-lg hover:bg-[#f0c25c] disabled:opacity-50"
+                      title="Save"
+                    >
+                      {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    </button>
+
+                    <button
+                      disabled={saving}
+                      onClick={() => setDeleteConfirmItem(item)}
+                      className="bg-red-500/10 border border-red-500/30 text-red-400 p-2 rounded-lg hover:bg-red-500 hover:text-white disabled:opacity-50"
+                      title="Delete Item"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 7: WHY US */}
+        {activeTab === 'whyus' && (
+          <div className="flex flex-col gap-6">
+            <div className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold uppercase text-white tracking-wide flex items-center gap-2">
+                  <Grid className="w-5 h-5 text-[#E5B549]" />
+                  Why Us Statistics
+                </h2>
+                <p className="text-xs text-[#D7E2EA]/60 mt-1">
+                  Manage the statistic cards in the Why Us section (Image, Number, Label, Description).
+                </p>
+              </div>
+            </div>
+
+            {/* Form to Add New Why Us Stat */}
+            <div className="bg-[#161616] border border-[#E5B549]/30 rounded-2xl p-6 flex flex-col gap-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-[#E5B549] flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                Add New Statistic Card
+              </h3>
+
+              <form 
+                onSubmit={(e) => handleAddGalleryImage(e, 'WhyUs')} 
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end"
+              >
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D7E2EA]/80">
+                    Big Number (Title)
+                  </label>
+                  <input
+                    type="text"
+                    disabled={uploadingGallery}
+                    placeholder="e.g. 10+"
+                    value={newGalleryTitle}
+                    onChange={(e) => setNewGalleryTitle(e.target.value)}
+                    required
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D7E2EA]/80">
+                    Label (Subtitle)
+                  </label>
+                  <input
+                    type="text"
+                    disabled={uploadingGallery}
+                    placeholder="e.g. Years of Experience"
+                    value={newHeroSubtitle} // Reusing this generic state for the subtitle form field
+                    onChange={(e) => setNewHeroSubtitle(e.target.value)}
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-[#D7E2EA]/80">
+                    Upload Background
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={uploadingGallery}
+                    onChange={(e) => setNewGalleryFile(e.target.files?.[0] || null)}
+                    required
+                    className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                  />
+                </div>
+
+                <div className="flex justify-end mt-2">
+                  <button
+                    type="submit"
+                    disabled={uploadingGallery}
+                    className="bg-[#E5B549] w-full text-black font-bold uppercase tracking-wider text-xs px-6 py-3 rounded-xl hover:bg-[#f0c25c] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {uploadingGallery ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4" />
+                        Add Stat
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Why Us Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {galleryItems.filter(item => item.category === 'WhyUs').map(item => (
+                <div
+                  key={item.id}
+                  className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl p-5 flex flex-col gap-4 justify-between"
+                >
+                  <div className="flex flex-col gap-3">
+                    <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-[#D7E2EA]/20 bg-black flex flex-col items-center justify-center">
+                      <img src={item.image_url} alt={item.title || 'Stat'} className="absolute inset-0 w-full h-full object-cover opacity-50" />
+                      <div className="relative z-10 text-center">
+                         <span className="font-black text-3xl text-white block">{item.title}</span>
+                         <span className="text-xs font-bold uppercase text-[#E5B549]">{item.subtitle}</span>
+                      </div>
+                      <div className="absolute top-2 left-2 bg-black/80 px-2 py-1 rounded text-[10px] font-bold text-[#E5B549] uppercase z-20">
+                        #{item.display_order} • Why Us
+                      </div>
+                    </div>
+
+                    <input
+                      type="text"
+                      disabled={saving}
+                      placeholder="Number (e.g. 10+)"
+                      value={item.title || ''}
+                      onChange={(e) => {
+                        const globalIndex = galleryItems.findIndex(g => g.id === item.id);
+                        if (globalIndex === -1) return;
+                        const updated = [...galleryItems];
+                        updated[globalIndex].title = e.target.value;
+                        setGalleryItems(updated);
+                      }}
+                      className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-3 py-2 text-white font-bold text-sm focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                    />
+
+                    <input
+                      type="text"
+                      disabled={saving}
+                      placeholder="Label (e.g. Years of Experience)"
+                      value={item.subtitle || ''}
+                      onChange={(e) => {
+                        const globalIndex = galleryItems.findIndex(g => g.id === item.id);
+                        if (globalIndex === -1) return;
+                        const updated = [...galleryItems];
+                        updated[globalIndex].subtitle = e.target.value;
+                        setGalleryItems(updated);
+                      }}
+                      className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-3 py-2 text-[#D7E2EA]/70 text-xs focus:outline-none focus:border-[#E5B549] disabled:opacity-50"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 border-t border-[#D7E2EA]/10 pt-4">
+                    <label className="cursor-pointer bg-[#1A1A1A] border border-[#D7E2EA]/20 hover:border-[#E5B549] text-white px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1 w-full justify-center">
+                      <Upload className="w-3.5 h-3.5 text-[#E5B549]" />
+                      Replace
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={saving}
+                        className="hidden"
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            handleImageReplace(item, 'gallery', e.target.files[0]);
+                          }
+                        }}
+                      />
+                    </label>
+
+                    <button
+                      disabled={saving}
+                      onClick={() => handleSaveImageRecord(item)}
+                      className="bg-[#E5B549] text-black p-2 rounded-lg hover:bg-[#f0c25c] disabled:opacity-50"
+                      title="Save"
+                    >
+                      {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    </button>
+
+                    <button
+                      disabled={saving}
+                      onClick={() => setDeleteConfirmItem(item)}
+                      className="bg-red-500/10 border border-red-500/30 text-red-400 p-2 rounded-lg hover:bg-red-500 hover:text-white disabled:opacity-50"
+                      title="Delete Item"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </main>
 
       {/* CONFIRMATION SAFETY MODAL (Requirement 2) */}
@@ -1277,7 +1953,7 @@ export const AdminDashboard: React.FC = () => {
 
             <div className="flex flex-col gap-3">
               <p className="text-sm text-[#D7E2EA]">
-                Are you sure you want to permanently delete this gallery image item?
+                Are you sure you want to permanently delete this {deleteConfirmItem.section === 'hero' ? 'hero slide' : deleteConfirmItem.section === 'service' ? 'service' : 'item'}?
               </p>
 
               <div className="p-3 bg-[#1A1A1A] border border-[#D7E2EA]/10 rounded-xl flex items-center gap-3">

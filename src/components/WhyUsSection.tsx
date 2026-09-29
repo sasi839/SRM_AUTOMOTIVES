@@ -1,14 +1,15 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { FadeIn } from './Reusable';
+import { useSiteData } from '../context/SiteDataContext';
 
-const stats = [
+const defaultStats = [
   { number: "10+", label: "Years of Experience", desc: "Delivering top-tier automotive care with a legacy of trust.", image: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80" },
   { number: "5000+", label: "Happy Customers", desc: "Consistently exceeding expectations for car owners across Tirupati.", image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80" },
   { number: "20+", label: "Expert Mechanics", desc: "Highly skilled, certified technicians handling every repair with precision.", image: "https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?auto=format&fit=crop&w=800&q=80" },
   { number: "24/7", label: "Emergency Support", desc: "Round-the-clock towing and roadside assistance when you need it most.", image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80" }
 ];
 
-function StatCard({ stat, index }: { stat: typeof stats[0]; index: number }) {
+function StatCard({ stat, index }: { stat: { number: string, label: string, desc?: string, image: string }; index: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleIntersect = useCallback((entries: IntersectionObserverEntry[]) => {
@@ -51,9 +52,11 @@ function StatCard({ stat, index }: { stat: typeof stats[0]; index: number }) {
           <h3 className="font-medium text-sm sm:text-base md:text-xl uppercase tracking-wider mb-1 sm:mb-3 text-white leading-tight">
             {stat.label}
           </h3>
-          <p className="font-light text-[10px] sm:text-xs md:text-sm opacity-70 leading-snug line-clamp-2 sm:line-clamp-none text-white/70">
-            {stat.desc}
-          </p>
+          {stat.desc && (
+            <p className="font-light text-[10px] sm:text-xs md:text-sm opacity-70 leading-snug line-clamp-2 sm:line-clamp-none text-white/70">
+              {stat.desc}
+            </p>
+          )}
         </div>
       </div>
     </FadeIn>
@@ -61,8 +64,18 @@ function StatCard({ stat, index }: { stat: typeof stats[0]; index: number }) {
 }
 
 const WhyUsSection = () => {
+  const { whyUsItems } = useSiteData();
+
+  const finalStats = whyUsItems && whyUsItems.length > 0
+    ? whyUsItems.map(item => ({
+        number: item.caption || (item as any).title || "10+", // In AdminDashboard, Title is mapped to number
+        label: item.subtitle || "Years of Experience",
+        image: item.imageUrl
+      }))
+    : defaultStats;
+
   return (
-    <section id="why-us" className="bg-[#141418] text-[#D7E2EA] px-4 sm:px-6 md:px-10 py-12 sm:py-20 md:py-32 relative z-10">
+    <section id="why-us" className="bg-[#1c1c21] text-[#D7E2EA] px-4 sm:px-6 md:px-10 py-12 sm:py-20 md:py-32 relative z-10">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         
         <FadeIn delay={0} y={40} className="mb-12 sm:mb-16 md:mb-20 text-center w-full">
@@ -72,8 +85,8 @@ const WhyUsSection = () => {
         </FadeIn>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8 w-full">
-          {stats.map((stat, idx) => (
-            <StatCard key={stat.label} stat={stat} index={idx} />
+          {finalStats.map((stat, idx) => (
+            <StatCard key={idx} stat={stat} index={idx} />
           ))}
         </div>
 

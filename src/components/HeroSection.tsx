@@ -32,7 +32,7 @@ const HeroSection = () => {
   const whatsappHref = `https://wa.me/${businessContent.whatsapp_number || '918919594039'}`;
 
   return (
-    <section id="hero" className="relative aspect-[4/3] sm:aspect-video md:aspect-auto md:h-[100dvh] min-h-[360px] md:min-h-0 w-full flex flex-col bg-[#141418] overflow-hidden">
+    <section id="hero" className="relative aspect-[4/3] sm:aspect-video md:aspect-auto md:h-[100dvh] min-h-[360px] md:min-h-0 w-full flex flex-col bg-[#1c1c21] overflow-hidden">
       {/* Background Slider */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence initial={false}>
@@ -47,7 +47,7 @@ const HeroSection = () => {
             className="absolute inset-0 w-full h-full object-cover animate-ken-burns"
           />
         </AnimatePresence>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 via-50% to-[#141418]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 via-50% to-[#1c1c21]" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
       </div>
 
@@ -55,8 +55,9 @@ const HeroSection = () => {
       <header className="w-full z-30 relative pointer-events-auto border-b border-white/10 backdrop-blur-sm bg-black/20">
         <div className="flex justify-between items-center px-4 md:px-10 py-3 max-w-7xl mx-auto">
           {/* Logo / Brand */}
-          <a href="#" className="flex items-center gap-3">
-            <span className="font-black text-2xl tracking-tighter text-white uppercase">
+          <a href="#" className="flex items-center gap-3 group">
+            <img src="/srm-logo.png" alt="SRM Automotives" className="h-9 sm:h-11 md:h-12 w-auto object-contain drop-shadow-xl hover:scale-105 transition-transform duration-300" />
+            <span className="font-black text-lg sm:text-2xl tracking-tighter text-white uppercase group-hover:text-red-500 transition-colors hidden sm:inline">
               {businessContent.business_name || 'SRM AUTOMOTIVES'}
             </span>
           </a>
@@ -86,7 +87,13 @@ const HeroSection = () => {
             <a href={whatsappHref} target="_blank" rel="noreferrer" className="hover:scale-110 transition-transform drop-shadow-md flex items-center justify-center" title="WhatsApp Us">
               <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 object-contain" />
             </a>
-            <a href="#contact" className="hover:scale-110 transition-transform drop-shadow-md flex items-center justify-center" title="Location">
+            <a 
+              href={businessContent.google_maps_url || 'https://maps.app.goo.gl/dnHpFsgdPKao7ALk7'} 
+              target="_blank" 
+              rel="noreferrer" 
+              className="hover:scale-110 transition-transform drop-shadow-md flex items-center justify-center" 
+              title="Open Location in Google Maps"
+            >
               <img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg" alt="Location" className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 object-contain" />
             </a>
             
@@ -109,12 +116,15 @@ const HeroSection = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="fixed inset-0 bg-[#141418] z-50 flex flex-col justify-between p-8 border-l border-white/10 md:hidden"
+            className="fixed inset-0 bg-[#1c1c21] z-50 flex flex-col justify-between p-8 border-l border-white/10 md:hidden"
           >
             <div className="flex justify-between items-center border-b border-white/10 pb-6">
-              <span className="font-black text-xl tracking-tighter text-white uppercase">
-                {businessContent.business_name || 'SRM AUTOMOTIVES'}
-              </span>
+              <div className="flex items-center gap-3">
+                <img src="/srm-logo.png" alt="SRM Automotives" className="h-10 sm:h-12 w-auto object-contain drop-shadow-lg" />
+                <span className="font-black text-xl tracking-tighter text-white uppercase">
+                  {businessContent.business_name || 'SRM AUTOMOTIVES'}
+                </span>
+              </div>
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-white hover:text-brand transition-colors p-2"

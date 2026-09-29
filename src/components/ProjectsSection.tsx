@@ -45,7 +45,7 @@ function GalleryCard({ item, index }: { item: PublicGalleryItem; index: number }
           className="service-card-image"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141418] via-[#141418]/40 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1c1c21] via-[#1c1c21]/40 to-transparent z-10" />
         <div className="absolute bottom-0 left-0 p-3 sm:p-6 z-20">
           <p className="text-brand text-[10px] sm:text-sm font-semibold tracking-widest uppercase mb-1">
             {item.category}
@@ -63,7 +63,7 @@ export default function ProjectsSection() {
   const { galleryItems } = useSiteData();
 
   return (
-    <section id="gallery" className="w-full bg-[#141418] py-12 sm:py-20 md:py-32 px-4 sm:px-6 md:px-10">
+    <section id="gallery" className="w-full bg-[#1c1c21] py-12 sm:py-20 md:py-32 px-4 sm:px-6 md:px-10">
       <div className="max-w-7xl mx-auto">
         <FadeIn delay={0} y={40} className="mb-16">
           <h2 className="hero-heading section-accent font-black uppercase leading-none tracking-tight text-[clamp(2.25rem,8vw,100px)] text-white">

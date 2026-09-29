@@ -63,7 +63,7 @@ export default function ServicesSection() {
   const { services } = useSiteData();
 
   return (
-    <section id="services" className="w-full bg-[#141418] py-12 sm:py-16 md:py-32 px-4 sm:px-6 md:px-10 relative">
+    <section id="services" className="w-full bg-[#1c1c21] py-12 sm:py-16 md:py-32 px-4 sm:px-6 md:px-10 relative">
       <div className="max-w-7xl mx-auto flex flex-col gap-12 md:gap-16">
         
         {/* Header */}

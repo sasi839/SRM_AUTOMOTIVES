@@ -15,13 +15,14 @@ const FooterSection = () => {
     .split('\n');
 
   return (
-    <footer id="contact" className="bg-[#141418] text-[#D7E2EA] px-4 sm:px-8 md:px-10 py-12 sm:py-24 border-t border-[#D7E2EA]/10 relative z-20">
+    <footer id="contact" className="bg-[#1c1c21] text-[#D7E2EA] px-4 sm:px-8 md:px-10 py-12 sm:py-24 border-t border-[#D7E2EA]/10 relative z-20">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12 md:gap-20">
         
         {/* Contact Info */}
         <div className="flex-1 flex flex-col gap-8">
-          <FadeIn delay={0} y={30}>
-            <h2 className="font-black uppercase text-4xl sm:text-5xl md:text-6xl tracking-tight leading-none text-white mb-6">
+          <FadeIn delay={0} y={30} className="flex items-center gap-3 sm:gap-4 mb-6">
+            <img src="/srm-logo.png" alt="SRM Automotives" className="h-12 sm:h-14 md:h-16 w-auto object-contain drop-shadow-xl" />
+            <h2 className="font-black uppercase text-3xl sm:text-4xl md:text-5xl tracking-tight leading-none text-white">
               Contact Us
             </h2>
           </FadeIn>
@@ -80,7 +81,7 @@ const FooterSection = () => {
             src="https://www.google.com/maps?q=184,+Renigunta+Road,+S.V.+Autonagar,+Tirupati&output=embed" 
             width="100%" 
             height="100%" 
-            style={{ border: 0, filter: 'grayscale(100%) invert(90%) contrast(1.2)' }} 
+            style={{ border: 0 }} 
             allowFullScreen={false} 
             loading="lazy" 
             referrerPolicy="no-referrer-when-downgrade"
@@ -92,7 +93,7 @@ const FooterSection = () => {
             href={directionsUrl} 
             target="_blank" 
             rel="noreferrer"
-            className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-full border-2 border-[#D7E2EA] bg-[#141418]/90 backdrop-blur-md text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-3 hover:bg-brand hover:text-black hover:border-brand transition-colors duration-300 text-sm z-10 shadow-xl"
+            className="absolute bottom-6 right-6 inline-flex items-center gap-2 rounded-full border-2 border-[#D7E2EA] bg-[#1c1c21]/90 backdrop-blur-md text-[#D7E2EA] font-medium uppercase tracking-widest px-6 py-3 hover:bg-brand hover:text-black hover:border-brand transition-colors duration-300 text-sm z-10 shadow-xl"
           >
             <MapPin className="w-4 h-4" />
             Directions
@@ -106,9 +107,9 @@ const FooterSection = () => {
         <p>&copy; {new Date().getFullYear()} SRM Automotives. All rights reserved.</p>
         <a 
           href="/admin" 
-          className="hover:text-brand transition-colors duration-300 flex items-center gap-1"
+          className="bg-brand/10 text-brand hover:bg-brand hover:text-black border border-brand/20 transition-colors duration-300 flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-widest uppercase"
         >
-          <span className="opacity-50 hover:opacity-100 transition-opacity">Admin Login</span>
+          Admin Login
         </a>
       </div>
     </footer>

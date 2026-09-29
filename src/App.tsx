@@ -6,6 +6,7 @@ import WhyUsSection from './components/WhyUsSection';
 import ServicesSection from './components/ServicesSection';
 import ProjectsSection from './components/ProjectsSection';
 import FooterSection from './components/FooterSection';
+import EmergencyBreakdownButton from './components/EmergencyBreakdownButton';
 import AdminPage from './admin/AdminPage';
 import { SiteDataProvider } from './context/SiteDataContext';
 
@@ -39,6 +40,7 @@ function App() {
         <WhyUsSection />
         <AboutSection />
         <FooterSection />
+        <EmergencyBreakdownButton />
       </div>
     </SiteDataProvider>
   );

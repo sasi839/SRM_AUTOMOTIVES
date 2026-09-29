@@ -53,6 +53,7 @@ export interface PublicGalleryItem {
   category: string;
   imageUrl: string;
   caption: string;
+  subtitle?: string;
 }
 
 interface SiteDataContextType {
@@ -60,10 +61,30 @@ interface SiteDataContextType {
   heroSlides: PublicHeroSlide[];
   services: PublicServiceItem[];
   galleryItems: PublicGalleryItem[];
+  marqueeItems: PublicGalleryItem[];
+  aboutItems: PublicGalleryItem[];
+  whyUsItems: PublicGalleryItem[];
   loading: boolean;
 }
 
 const SiteDataContext = createContext<SiteDataContextType | undefined>(undefined);
+
+const getServiceIcon = (title: string) => {
+  const normalizedTitle = title.toLowerCase().trim();
+  switch (normalizedTitle) {
+    case 'mechanical repairs': return Wrench;
+    case 'tinkering': return Hammer;
+    case 'painting': return PaintBucket;
+    case 'teflon coating': return Sparkles;
+    case 'a/c repairs': return Wind;
+    case 'insurance claims': return ShieldCheck;
+    case 'roadside assistance': return LifeBuoy;
+    case 'breakdown services': return Car;
+    case 'roadside towing': return Truck;
+    case 'spare parts': return Settings;
+    default: return Wrench;
+  }
+};
 
 export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [businessContent, setBusinessContent] = useState<SiteContent>(DEFAULT_BUSINESS_CONTENT);
@@ -72,6 +93,9 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [galleryItems, setGalleryItems] = useState<PublicGalleryItem[]>(
     galleryData.map(g => ({ id: g.id, category: g.category, imageUrl: g.imageUrl, caption: g.caption }))
   );
+  const [marqueeItems, setMarqueeItems] = useState<PublicGalleryItem[]>([]);
+  const [aboutItems, setAboutItems] = useState<PublicGalleryItem[]>([]);
+  const [whyUsItems, setWhyUsItems] = useState<PublicGalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchPublicSiteData = async () => {
@@ -116,22 +140,18 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         // Process Services Images
         const dbServices = items.filter((img) => img.section === 'service');
         if (dbServices.length > 0) {
-          const updatedServices = DEFAULT_SERVICES.map((defService) => {
-            const matchedDbItem = dbServices.find(
-              (img) => img.title?.toLowerCase().trim() === defService.name.toLowerCase().trim()
-            );
-            return {
-              ...defService,
-              image: matchedDbItem?.image_url || defService.image,
-              desc: matchedDbItem?.subtitle || defService.desc,
-            };
-          });
-          setServices(updatedServices);
+          const mappedServices = dbServices.map(img => ({
+            name: img.title || 'Service',
+            icon: getServiceIcon(img.title || ''),
+            desc: img.subtitle || '',
+            image: img.image_url,
+          }));
+          setServices(mappedServices);
         }
 
         // Process Gallery Items
         const dbGallery = items
-          .filter((img) => img.section === 'gallery')
+          .filter((img) => img.section === 'gallery' && !['Marquee', 'About', 'WhyUs'].includes(img.category || ''))
           .map((img) => ({
             id: img.id,
             category: img.category || 'Work',
@@ -141,6 +161,49 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
         if (dbGallery.length > 0) {
           setGalleryItems(dbGallery);
+        }
+
+        // Process Marquee Items
+        const dbMarquee = items
+          .filter((img) => img.section === 'gallery' && img.category === 'Marquee')
+          .map((img) => ({
+            id: img.id,
+            category: img.category || 'Marquee',
+            imageUrl: img.image_url,
+            caption: img.title || 'SRM AUTOMOTIVES',
+          }));
+
+        if (dbMarquee.length > 0) {
+          setMarqueeItems(dbMarquee);
+        }
+
+        // Process About Items
+        const dbAbout = items
+          .filter((img) => img.section === 'gallery' && img.category === 'About')
+          .map((img) => ({
+            id: img.id,
+            category: img.category || 'About',
+            imageUrl: img.image_url,
+            caption: img.title || 'About Image',
+          }));
+
+        if (dbAbout.length > 0) {
+          setAboutItems(dbAbout);
+        }
+
+        // Process Why Us Items
+        const dbWhyUs = items
+          .filter((img) => img.section === 'gallery' && img.category === 'WhyUs')
+          .map((img) => ({
+            id: img.id,
+            category: img.category || 'WhyUs',
+            imageUrl: img.image_url,
+            caption: img.title || 'Why Us Stat',
+            subtitle: img.subtitle,
+          }));
+
+        if (dbWhyUs.length > 0) {
+          setWhyUsItems(dbWhyUs as any); // subtitle isn't in PublicGalleryItem by default but we can pass it through since JS is dynamic, or we can add it. Let's just pass it.
         }
       }
     } catch (err: unknown) {
@@ -161,6 +224,9 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         heroSlides,
         services,
         galleryItems,
+        marqueeItems,
+        aboutItems,
+        whyUsItems,
         loading,
       }}
     >

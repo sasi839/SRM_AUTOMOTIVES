@@ -142,21 +142,37 @@ export async function deleteWebsiteImage(
   imageRecordId: string,
   storagePath?: string
 ): Promise<{ success: boolean; error?: Error }> {
-  // 1. Update DB (or soft delete)
-  const updateData: Partial<SiteImage> = { is_active: false };
+  // 1. Fetch the image record to get the image_url
+  const { data: record, error: fetchError } = await supabase
+    .from('site_images')
+    .select('image_url')
+    .eq('id', imageRecordId)
+    .single();
 
+  if (fetchError) {
+    return { success: false, error: fetchError };
+  }
+
+  // 2. Hard delete the record from the database
   const { error: dbError } = await supabase
     .from('site_images')
-    .update(updateData as never)
+    .delete()
     .eq('id', imageRecordId);
 
   if (dbError) {
     return { success: false, error: dbError };
   }
 
-  // 2. Delete storage file if path supplied
-  if (storagePath) {
-    await deleteStorageFile(storagePath);
+  // 3. Extract the storage file path and delete the storage file
+  const imageUrl = (record as { image_url?: string } | null)?.image_url;
+  let pathToDelete = storagePath;
+
+  if (!pathToDelete && imageUrl && imageUrl.includes(`/${BUCKET_NAME}/`)) {
+    pathToDelete = imageUrl.split(`/${BUCKET_NAME}/`)[1];
+  }
+
+  if (pathToDelete) {
+    await deleteStorageFile(pathToDelete);
   }
 
   return { success: true };

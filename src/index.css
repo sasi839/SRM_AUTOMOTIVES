@@ -23,7 +23,7 @@
     scroll-behavior: smooth;
   }
   html, body, #root, .main-wrapper {
-    background-color: #141418;
+    background-color: #1c1c21;
     color: white;
   }
 }
@@ -113,8 +113,8 @@ button:hover .cta-arrow {
 }
 .service-card:hover .service-card-image,
 .service-card:focus-within .service-card-image {
-  filter: grayscale(0%) brightness(0.85);
-  opacity: 0.95;
+  filter: grayscale(0%) brightness(1.1);
+  opacity: 1;
   transform: scale(1.08);
 }
 
@@ -126,8 +126,8 @@ button:hover .cta-arrow {
     transition: all 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   .service-card.in-view .service-card-image {
-    filter: grayscale(0%) brightness(0.85);
-    opacity: 0.95;
+    filter: grayscale(0%) brightness(1.1);
+    opacity: 1;
     transform: scale(1.08);
   }
   .service-card.in-view {
@@ -184,7 +184,7 @@ button:hover .cta-arrow {
   transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 .marquee-card:hover .marquee-card-image {
-  filter: grayscale(0%) brightness(0.85);
+  filter: grayscale(0%) brightness(1.1);
   opacity: 1;
   transform: scale(1.06);
 }
@@ -201,7 +201,7 @@ button:hover .cta-arrow {
     transition: all 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   .marquee-card.in-view .marquee-card-image {
-    filter: grayscale(0%) brightness(0.85);
+    filter: grayscale(0%) brightness(1.1);
     opacity: 1;
     transform: scale(1.06);
   }
@@ -209,5 +209,21 @@ button:hover .cta-arrow {
     border-color: var(--color-border-hover);
     box-shadow: 0 0 24px rgba(200, 164, 78, 0.18), 0 8px 32px rgba(0,0,0,0.4);
     transition: all 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+}
+
+/* ── Emergency Breakdown Button Pulse ── */
+@keyframes emergency-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
   }
 }

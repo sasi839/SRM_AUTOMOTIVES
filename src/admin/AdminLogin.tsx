@@ -33,11 +33,9 @@ export const AdminLogin: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#0C0C0C] text-[#D7E2EA] flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-[#121212] border border-[#D7E2EA]/20 rounded-2xl p-8 shadow-2xl">
+      <div className="w-full max-w-md bg-[#121212] border border-[#E5B549]/20 rounded-2xl p-8 shadow-2xl shadow-[#E5B549]/5">
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-16 h-16 rounded-full bg-[#E5B549]/10 border border-[#E5B549]/30 flex items-center justify-center mb-4 text-[#E5B549]">
-            <Lock className="w-8 h-8" />
-          </div>
+          <img src="/srm-logo.png" alt="SRM Automotives" className="h-16 sm:h-20 w-auto object-contain mb-4 drop-shadow-2xl" />
           <h1 className="text-2xl font-black uppercase tracking-wider text-white">
             SRM AUTOMOTIVES
           </h1>
@@ -91,7 +89,7 @@ export const AdminLogin: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 bg-[#E5B549] text-black font-bold uppercase tracking-wider py-3.5 px-6 rounded-xl hover:bg-[#f0c25c] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full mt-2 bg-gradient-to-r from-[#E5B549] to-[#D4A030] text-black font-bold uppercase tracking-wider py-3.5 px-6 rounded-xl hover:from-[#f0c25c] hover:to-[#E5B549] transition-all shadow-lg shadow-[#E5B549]/20 flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {loading ? (
               <>
