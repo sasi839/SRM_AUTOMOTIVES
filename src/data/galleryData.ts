@@ -7,7 +7,7 @@ export const galleryData = [
   { id: '6', category: 'Painting', imageUrl: 'https://images.unsplash.com/photo-1611016186353-9af58c69a533?auto=format&fit=crop&w=800&q=80', caption: 'Scratch & Blemish Repair' },
   { id: '7', category: 'Teflon Coating', imageUrl: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=800&q=80', caption: 'Premium Polish & Shine' },
   { id: '8', category: 'Teflon Coating', imageUrl: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80', caption: 'Long-lasting Ceramic Protection' },
-  { id: '9', category: 'Roadside Towing', imageUrl: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80', caption: '24/7 Emergency Recovery' },
+  { id: '9', category: 'Roadside Towing', imageUrl: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80', caption: 'Emergency Breakdown Recovery' },
   { id: '10', category: 'Roadside Towing', imageUrl: 'https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=800&q=80', caption: 'Safe Flatbed Transport' },
   { id: '11', category: 'Spare Parts', imageUrl: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80', caption: 'Genuine OEM Components' },
   { id: '12', category: 'Spare Parts', imageUrl: 'https://images.unsplash.com/photo-1598257006458-087169a1f08d?auto=format&fit=crop&w=800&q=80', caption: 'Performance Upgrades' }

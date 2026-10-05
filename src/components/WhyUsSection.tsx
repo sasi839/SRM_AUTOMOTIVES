@@ -3,10 +3,12 @@ import { FadeIn } from './Reusable';
 import { useSiteData } from '../context/SiteDataContext';
 
 const defaultStats = [
-  { number: "10+", label: "Years of Experience", desc: "Delivering top-tier automotive care with a legacy of trust.", image: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80" },
-  { number: "5000+", label: "Happy Customers", desc: "Consistently exceeding expectations for car owners across Tirupati.", image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80" },
-  { number: "20+", label: "Expert Mechanics", desc: "Highly skilled, certified technicians handling every repair with precision.", image: "https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?auto=format&fit=crop&w=800&q=80" },
-  { number: "24/7", label: "Emergency Support", desc: "Round-the-clock towing and roadside assistance when you need it most.", image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80" }
+  { number: "10+", label: "Years of Experience", desc: "Delivering top-tier automotive care with a legacy of trust in Tirupati.", image: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80" },
+  { number: "15000+", label: "Happy Customers", desc: "Consistently exceeding expectations for car owners across Tirupati.", image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80" },
+  { number: "24/7", label: "Emergency Support", desc: "Round-the-clock towing and roadside assistance on Renigunta Road.", image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80" },
+  { number: "EXPERT", label: "Mechanical Care", desc: "Engine diagnostics, complete servicing, and expert mechanical repairs.", image: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=800&q=80" },
+  { number: "100%", label: "Genuine Parts", desc: "Authentic OEM spare components for maximum safety and vehicle durability.", image: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80" },
+  { number: "BODY", label: "Tinkering & Paint", desc: "Precision body dent tinkering, custom spray painting, and Teflon coating.", image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=800&q=80" }
 ];
 
 function StatCard({ stat, index }: { stat: { number: string, label: string, desc?: string, image: string }; index: number }) {
@@ -39,11 +41,11 @@ function StatCard({ stat, index }: { stat: { number: string, label: string, desc
 
   return (
     <FadeIn delay={0.1 + (index * 0.05)} y={20} className="h-full">
-      <div
+      <article
         ref={cardRef}
         className="service-card group relative overflow-hidden bg-surface border border-border rounded-2xl p-3 sm:p-6 md:p-8 aspect-square sm:aspect-auto sm:min-h-[220px] flex flex-col items-center justify-center text-center hover:-translate-y-1 hover:border-border-hover transition-all duration-300 gold-glow cursor-pointer"
       >
-        <img src={stat.image} className="service-card-image" loading="lazy" alt={stat.label} />
+        <img src={stat.image} className="service-card-image" loading="lazy" decoding="async" alt={stat.label} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30 z-10" />
         <div className="relative z-20">
           <span className="font-black text-3xl sm:text-4xl md:text-6xl lg:text-7xl mb-2 sm:mb-4 bg-clip-text text-transparent bg-gradient-to-b from-brand-light to-brand block">
@@ -58,7 +60,7 @@ function StatCard({ stat, index }: { stat: { number: string, label: string, desc
             </p>
           )}
         </div>
-      </div>
+      </article>
     </FadeIn>
   );
 }
@@ -84,7 +86,7 @@ const WhyUsSection = () => {
           </h2>
         </FadeIn>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8 w-full">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 md:gap-8 w-full">
           {finalStats.map((stat, idx) => (
             <StatCard key={idx} stat={stat} index={idx} />
           ))}

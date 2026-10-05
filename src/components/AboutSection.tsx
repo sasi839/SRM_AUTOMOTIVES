@@ -26,7 +26,9 @@ const AboutSection = () => {
       <FadeIn delay={0.1} x={-80} y={0} duration={0.9} className="absolute top-[2%] sm:top-[4%] left-1 sm:left-[2%] md:left-[4%]">
         <img 
           src={getImgSrc(0)} 
-          alt="Garage" 
+          alt="SREE RAJA RAJESWARI MOTORS Workshop in Tirupati" 
+          loading="lazy"
+          decoding="async"
           className="w-[50px] sm:w-[160px] md:w-[210px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
@@ -34,7 +36,9 @@ const AboutSection = () => {
       <FadeIn delay={0.15} x={80} y={0} duration={0.9} className="absolute top-[2%] sm:top-[4%] right-1 sm:right-[2%] md:right-[4%]">
         <img 
           src={getImgSrc(1)} 
-          alt="Engine" 
+          alt="Car Engine Repair and Diagnostic Service" 
+          loading="lazy"
+          decoding="async"
           className="w-[50px] sm:w-[160px] md:w-[210px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
@@ -42,7 +46,9 @@ const AboutSection = () => {
       <FadeIn delay={0.25} x={-80} y={0} duration={0.9} className="absolute bottom-[4%] sm:bottom-[8%] left-1 sm:left-[6%] md:left-[10%]">
         <img 
           src={getImgSrc(2)} 
-          alt="Wheel" 
+          alt="Car Wheel, Brake and Suspension Overhaul" 
+          loading="lazy"
+          decoding="async"
           className="w-[45px] sm:w-[140px] md:w-[180px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
@@ -50,7 +56,9 @@ const AboutSection = () => {
       <FadeIn delay={0.3} x={80} y={0} duration={0.9} className="absolute bottom-[4%] sm:bottom-[8%] right-1 sm:right-[6%] md:right-[10%]">
         <img 
           src={getImgSrc(3)} 
-          alt="Tools" 
+          alt="Professional Automotive Mechanic Tools" 
+          loading="lazy"
+          decoding="async"
           className="w-[60px] sm:w-[170px] md:w-[220px] rounded-xl sm:rounded-[30px] object-cover aspect-square opacity-30 sm:opacity-60 mix-blend-luminosity hover:ring-2 hover:ring-brand/30 transition-all duration-300"
         />
       </FadeIn>
@@ -65,7 +73,7 @@ const AboutSection = () => {
         
         {/* Short punchy Animated Text */}
         <AnimatedText 
-          text="SRM Automotives began with a simple idea: car care shouldn't feel like a hassle." 
+          text="Sree Raja Rajeswari Motors began with a simple idea: car care shouldn't feel like a hassle." 
           className="text-white font-medium leading-relaxed max-w-2xl text-[clamp(1.1rem,2.5vw,1.8rem)] mb-10"
         />
 
@@ -73,25 +81,25 @@ const AboutSection = () => {
         <div className="flex flex-col gap-6 text-[#D7E2EA]/80 font-light leading-relaxed text-[clamp(0.9rem,1.5vw,1.1rem)] max-w-3xl mb-16 sm:mb-20 md:mb-24 px-4 text-left md:text-center">
           <FadeIn delay={0.1}>
             <p>
-              Based in Autonagar, Tirupati, we've grown into a full-service garage that car owners trust. Our team handles the full spectrum of car care under one roof. Mechanical repairs are our foundation — engine diagnostics, servicing, and fixes done right the first time.
+              Located at S.V. Autonagar on Renigunta Road in Tirupati, <strong className="text-white font-medium">SREE RAJA RAJESWARI MOTORS</strong> is a trusted full-service multi-brand car workshop. Mechanical repairs form our core foundation — from complete engine diagnostics and general servicing to precision mechanical troubleshooting.
             </p>
           </FadeIn>
           
           <FadeIn delay={0.2}>
             <p>
-              For bodywork, our tinkering and painting services restore your car's look with precision finishing. We also help you protect your investment long-term with teflon coating that shields your paint from scratches. When parts need replacing, we only use genuine spare parts so you get reliability that lasts.
+              Our car body shop specializes in expert tinkering for dent removal and full-body spray painting with flawless color matching. We also offer Teflon coating paint protection to shield your vehicle, complete A/C repair services, and seamless assistance with accidental insurance claim processing.
             </p>
           </FadeIn>
           
           <FadeIn delay={0.3}>
             <p>
-              Accidents and breakdowns rarely happen at a good time. That's why we run a <strong className="text-brand">24/7 emergency roadside towing service</strong> — one call, and we're on our way to get you and your car back on track, day or night.
+              When components require replacement, we supply 100% genuine OEM spare parts for long-lasting reliability. Should you experience an unexpected breakdown on the road, our emergency roadside assistance and towing service is ready to transport your vehicle safely to our Autonagar service center.
             </p>
           </FadeIn>
 
           <FadeIn delay={0.4}>
             <p className="text-white font-medium italic">
-              At SRM Automotives, we're not just fixing cars — we're building trust with every customer who walks through our doors. We're here to keep you moving.
+              At SREE RAJA RAJESWARI MOTORS, we deliver dependable car repairs and transparent service to keep drivers across Tirupati moving safely.
             </p>
           </FadeIn>
         </div>

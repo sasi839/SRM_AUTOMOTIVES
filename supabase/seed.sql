@@ -1,4 +1,4 @@
--- Seed data for SRM AUTOMOTIVES
+-- Seed data for SREE RAJA RAJESWARI MOTORS
 
 -- 1. Insert Initial Site Content
 INSERT INTO site_content (
@@ -11,13 +11,13 @@ INSERT INTO site_content (
     address,
     google_maps_url
 ) VALUES (
-    'SRM AUTOMOTIVES',
+    'SREE RAJA RAJESWARI MOTORS',
     'Lokesh',
     '+91 8919594039',
     NULL,
     '918919594039',
-    'Lokesh.lvrn@gimil.com',
-    'SRM AUTOMOTIVES, #184, Renigunta Road, S.V. Autonagar, Tirupati, Andhra Pradesh',
+    'Lokesh.lvrn@gmail.com',
+    'SREE RAJA RAJESWARI MOTORS, #184, Renigunta Road, S.V. Autonagar, Tirupati, Andhra Pradesh',
     'https://maps.app.goo.gl/dnHpFsgdPKao7ALk7'
 ) ON CONFLICT DO NOTHING;
 
@@ -25,7 +25,7 @@ INSERT INTO site_content (
 
 -- A. HERO SLIDES (section = 'hero')
 INSERT INTO site_images (section, title, subtitle, image_url, display_order, is_active) VALUES
-('hero', 'SRM AUTOMOTIVES', 'The premium destination for mechanical repairs, teflon coating, and luxury vehicle restoration in Tirupati.', 'https://images.unsplash.com/photo-1611016186353-9af58c69a533?auto=format&fit=crop&w=1920&q=80', 1, true),
+('hero', 'SREE RAJA RAJESWARI MOTORS', 'The premium destination for mechanical repairs, teflon coating, and luxury vehicle restoration in Tirupati.', 'https://images.unsplash.com/photo-1611016186353-9af58c69a533?auto=format&fit=crop&w=1920&q=80', 1, true),
 ('hero', 'EXPERT DETAILING', 'State-of-the-art facilities equipped to handle everything from routine maintenance to complex engine rebuilds.', 'https://images.unsplash.com/photo-1635425032549-065a3962b13c?auto=format&fit=crop&w=1920&q=80', 2, true),
 ('hero', 'PRECISION REPAIRS', 'Highly skilled, certified technicians handling every repair with precision and genuine spare parts.', 'https://images.unsplash.com/photo-1598257006458-087169a1f08d?auto=format&fit=crop&w=1920&q=80', 3, true);
 

@@ -10,13 +10,13 @@ import {
 // Static Defaults
 const DEFAULT_BUSINESS_CONTENT: SiteContent = {
   id: '',
-  business_name: 'SRM AUTOMOTIVES',
+  business_name: 'SREE RAJA RAJESWARI MOTORS',
   owner_name: 'Lokesh',
   primary_phone: '+91 8919594039',
   secondary_phone: null,
   whatsapp_number: '918919594039',
-  email: 'Lokesh.lvrn@gimil.com',
-  address: 'SRM AUTOMOTIVES\n#184, Renigunta Road\nS.V. Autonagar, Tirupati\nAndhra Pradesh',
+  email: 'Lokesh.lvrn@gmail.com',
+  address: 'SREE RAJA RAJESWARI MOTORS\n#184, Renigunta Road\nS.V. Autonagar, Tirupati\nAndhra Pradesh',
   google_maps_url: 'https://maps.app.goo.gl/dnHpFsgdPKao7ALk7',
   created_at: '',
   updated_at: '',
@@ -129,7 +129,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           .filter((img) => img.section === 'hero')
           .map((img) => ({
             image: img.image_url,
-            title: img.title || 'SRM AUTOMOTIVES',
+            title: img.title || 'SREE RAJA RAJESWARI MOTORS',
             subtitle: img.subtitle || '',
           }));
 
@@ -156,7 +156,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             id: img.id,
             category: img.category || 'Work',
             imageUrl: img.image_url,
-            caption: img.title || 'SRM AUTOMOTIVES',
+            caption: img.title || 'SREE RAJA RAJESWARI MOTORS',
           }));
 
         if (dbGallery.length > 0) {
@@ -170,7 +170,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             id: img.id,
             category: img.category || 'Marquee',
             imageUrl: img.image_url,
-            caption: img.title || 'SRM AUTOMOTIVES',
+            caption: img.title || 'SREE RAJA RAJESWARI MOTORS',
           }));
 
         if (dbMarquee.length > 0) {

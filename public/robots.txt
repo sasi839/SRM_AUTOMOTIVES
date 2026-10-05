@@ -1,0 +1,8 @@
+# SREE RAJA RAJESWARI MOTORS - robots.txt
+# Controls search engine crawler indexing
+
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://sreerajarajeswarimotors.com/sitemap.xml

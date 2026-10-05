@@ -35,9 +35,9 @@ export const AdminLogin: React.FC = () => {
     <div className="min-h-screen bg-[#0C0C0C] text-[#D7E2EA] flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-[#121212] border border-[#E5B549]/20 rounded-2xl p-8 shadow-2xl shadow-[#E5B549]/5">
         <div className="flex flex-col items-center text-center mb-8">
-          <img src="/srm-logo.png" alt="SRM Automotives" className="h-16 sm:h-20 w-auto object-contain mb-4 drop-shadow-2xl" />
+          <img src="/srm-logo.png" alt="SREE RAJA RAJESWARI MOTORS" className="h-16 sm:h-20 w-auto object-contain mb-4 drop-shadow-2xl" />
           <h1 className="text-2xl font-black uppercase tracking-wider text-white">
-            SRM AUTOMOTIVES
+            SREE RAJA RAJESWARI MOTORS
           </h1>
           <p className="text-xs uppercase tracking-widest text-[#D7E2EA]/60 mt-1">
             Admin Portal Sign In
@@ -107,7 +107,7 @@ export const AdminLogin: React.FC = () => {
             href="/"
             className="text-xs text-[#D7E2EA]/50 hover:text-[#E5B549] transition-colors uppercase tracking-wider"
           >
-            ← Back to SRM AUTOMOTIVES Website
+            ← Back to SRM Website
           </a>
         </div>
       </div>

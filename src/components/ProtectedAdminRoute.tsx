@@ -33,7 +33,7 @@ export const ProtectedAdminRoute: React.FC<ProtectedAdminRouteProps> = ({
           Access Denied
         </h3>
         <p className="text-sm text-[#D7E2EA]/70 max-w-md">
-          You must be logged in as an authorized SRM AUTOMOTIVES administrator to access protected management tools.
+          You must be logged in as an authorized SREE RAJA RAJESWARI MOTORS administrator to access protected management tools.
         </p>
       </div>
     );

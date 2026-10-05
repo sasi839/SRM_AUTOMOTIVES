@@ -28,7 +28,7 @@ const EmergencyBreakdownButton = () => {
     if (!navigator.geolocation) {
       // Fallback: open WhatsApp without location
       const fallbackMsg = encodeURIComponent(
-        `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 Location: (Unable to detect - please share manually)\n\n🚗 SRM AUTOMOTIVES - 24/7 Premium Car Assistance`
+        `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 Location: (Unable to detect - please share manually)\n\n🚗 SRM - Emergency Breakdown Service`
       );
       window.open(`https://wa.me/${whatsappNumber}?text=${fallbackMsg}`, '_blank');
       setIsLocating(false);
@@ -42,7 +42,7 @@ const EmergencyBreakdownButton = () => {
         const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
         
         const message = encodeURIComponent(
-          `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 *My Live Location:*\n${mapsLink}\n\n📌 Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}\n\n🚗 SRM AUTOMOTIVES - 24/7 Premium Car Assistance`
+          `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 *My Live Location:*\n${mapsLink}\n\n📌 Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}\n\n🚗 SRM - Emergency Breakdown Service`
         );
 
         window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
@@ -57,7 +57,7 @@ const EmergencyBreakdownButton = () => {
           setError('Location access denied. Tap again to send without location.');
           // Still allow sending without location on next tap
           const fallbackMsg = encodeURIComponent(
-            `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 Location: (Permission denied - please share location manually in chat)\n\n🚗 SRM AUTOMOTIVES - 24/7 Premium Car Assistance`
+            `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 Location: (Permission denied - please share location manually in chat)\n\n🚗 SRM - Emergency Breakdown Service`
           );
           setTimeout(() => {
             window.open(`https://wa.me/${whatsappNumber}?text=${fallbackMsg}`, '_blank');
@@ -67,7 +67,7 @@ const EmergencyBreakdownButton = () => {
           }, 1500);
         } else {
           const fallbackMsg = encodeURIComponent(
-            `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 Location: (Could not detect - please share manually)\n\n🚗 SRM AUTOMOTIVES - 24/7 Premium Car Assistance`
+            `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 Location: (Could not detect - please share manually)\n\n🚗 SRM - Emergency Breakdown Service`
           );
           window.open(`https://wa.me/${whatsappNumber}?text=${fallbackMsg}`, '_blank');
           setIsLocating(false);
@@ -111,7 +111,11 @@ const EmergencyBreakdownButton = () => {
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-red-500/40 shadow-lg shadow-red-500/20">
                 <img
                   src="/emergency-breakdown.png"
+                  width="80"
+                  height="80"
                   alt="Emergency Breakdown Service"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover scale-[1.3]"
                 />
               </div>
@@ -121,7 +125,7 @@ const EmergencyBreakdownButton = () => {
                   Emergency Breakdown
                 </h3>
                 <p className="text-red-400 text-[10px] sm:text-xs uppercase tracking-widest font-semibold mt-0.5">
-                  24/7 Premium Car Assistance
+                  Roadside Car Assistance
                 </p>
               </div>
 
@@ -178,7 +182,11 @@ const EmergencyBreakdownButton = () => {
         <div className="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-full overflow-hidden border-[3px] border-red-500/60 shadow-2xl shadow-red-500/30 group-hover:border-red-400 group-hover:shadow-red-400/40 transition-all duration-300 bg-[#1a1a1a]">
           <img
             src="/emergency-breakdown.png"
-            alt="Emergency Breakdown Service - 24/7"
+            width="72"
+            height="72"
+            alt="Emergency Breakdown Service"
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover scale-[1.3]"
             draggable={false}
           />

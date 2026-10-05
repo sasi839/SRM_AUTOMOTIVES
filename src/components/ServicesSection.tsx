@@ -4,10 +4,27 @@ import { useSiteData } from '../context/SiteDataContext';
 import type { PublicServiceItem } from '../context/SiteDataContext';
 import { ArrowRight } from 'lucide-react';
 
+const getServiceSlug = (name: string) => {
+  const norm = name.toLowerCase().trim();
+  if (norm.includes('mechanical')) return 'mechanical-repairs';
+  if (norm.includes('tinkering')) return 'tinkering';
+  if (norm.includes('painting')) return 'painting';
+  if (norm.includes('teflon')) return 'teflon-coating';
+  if (norm.includes('a/c') || norm.includes('ac')) return 'ac-repairs';
+  if (norm.includes('insurance')) return 'insurance-claims';
+  if (norm.includes('assistance')) return 'roadside-assistance';
+  if (norm.includes('breakdown')) return 'breakdown-services';
+  if (norm.includes('towing')) return 'roadside-towing';
+  if (norm.includes('spare')) return 'spare-parts';
+  return norm.replace(/[^a-z0-9]+/g, '-');
+};
+
 /* Individual card with scroll-triggered reveal for mobile */
-function ServiceCard({ service, index }: { service: PublicServiceItem; index: number }) {
-  const cardRef = useRef<HTMLDivElement>(null);
+function ServiceCard({ service, index, onNavigate }: { service: PublicServiceItem; index: number; onNavigate?: (path: string) => void }) {
+  const cardRef = useRef<HTMLAnchorElement>(null);
   const IconComponent = service.icon;
+  const slug = getServiceSlug(service.name);
+  const serviceUrl = `/services/${slug}`;
 
   const handleIntersect = useCallback((entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry) => {
@@ -37,11 +54,19 @@ function ServiceCard({ service, index }: { service: PublicServiceItem; index: nu
 
   return (
     <FadeIn delay={0.1 + (index * 0.05)} y={20} className="h-full">
-      <div
+      <a
         ref={cardRef}
-        className="service-card group relative overflow-hidden bg-surface border border-border rounded-2xl p-3 sm:p-8 aspect-square sm:aspect-auto sm:min-h-[220px] flex flex-col justify-end hover:-translate-y-1 hover:border-border-hover transition-all duration-300 gold-glow cursor-pointer"
+        href={serviceUrl}
+        onClick={(e) => {
+          if (onNavigate) {
+            e.preventDefault();
+            onNavigate(serviceUrl);
+          }
+        }}
+        aria-label={`${service.name} in Tirupati - SREE RAJA RAJESWARI MOTORS`}
+        className="service-card group relative overflow-hidden bg-surface border border-border rounded-2xl p-3 sm:p-8 aspect-square sm:aspect-auto sm:min-h-[220px] flex flex-col justify-end hover:-translate-y-1 hover:border-border-hover transition-all duration-300 gold-glow cursor-pointer block"
       >
-        <img src={service.image} className="service-card-image" loading="lazy" alt={service.name} />
+        <img src={service.image} className="service-card-image" loading="lazy" decoding="async" alt={`${service.name} Service at SREE RAJA RAJESWARI MOTORS Tirupati`} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10" />
         <div className="relative z-20">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-2 sm:mb-4 group-hover:bg-brand/20 transition-colors duration-300">
@@ -54,12 +79,12 @@ function ServiceCard({ service, index }: { service: PublicServiceItem; index: nu
             {service.desc}
           </p>
         </div>
-      </div>
+      </a>
     </FadeIn>
   );
 }
 
-export default function ServicesSection() {
+export default function ServicesSection({ onNavigate }: { onNavigate?: (path: string) => void }) {
   const { services } = useSiteData();
 
   return (
@@ -76,7 +101,7 @@ export default function ServicesSection() {
             </FadeIn>
           </div>
           <FadeIn delay={0.3} className="hidden md:block">
-            <a href="#contact" className="inline-flex items-center gap-2 text-brand border-b-2 border-brand pb-1 font-medium tracking-wider uppercase hover:text-brand-light hover:border-brand-light transition-colors">
+            <a href="#contact" aria-label="Book a service appointment with SREE RAJA RAJESWARI MOTORS" className="inline-flex items-center gap-2 text-brand border-b-2 border-brand pb-1 font-medium tracking-wider uppercase hover:text-brand-light hover:border-brand-light transition-colors">
               Book Appointment <ArrowRight className="w-4 h-4" />
             </a>
           </FadeIn>
@@ -85,13 +110,13 @@ export default function ServicesSection() {
         {/* Services Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 pt-4">
           {services.map((service, index) => (
-            <ServiceCard key={service.name || index} service={service} index={index} />
+            <ServiceCard key={service.name || index} service={service} index={index} onNavigate={onNavigate} />
           ))}
         </div>
         
         {/* Mobile CTA */}
         <div className="w-full flex justify-center md:hidden mt-4">
-          <a href="#contact" className="inline-flex items-center gap-2 bg-brand text-black px-6 py-3 rounded-full font-medium tracking-wider uppercase shadow-lg">
+          <a href="#contact" aria-label="Book a service appointment with SREE RAJA RAJESWARI MOTORS" className="inline-flex items-center gap-2 bg-brand text-black px-6 py-3 rounded-full font-medium tracking-wider uppercase shadow-lg">
             Book Appointment <ArrowRight className="w-4 h-4" />
           </a>
         </div>

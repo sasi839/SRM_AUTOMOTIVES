@@ -20,8 +20,8 @@ const FeaturesGridSection = () => {
     },
     { 
       icon: <Truck className="w-10 h-10 mb-4 text-[#D7E2EA]" />, 
-      title: "24/7 Roadside Towing", 
-      desc: "Round-the-clock emergency recovery and flatbed transport." 
+      title: "Roadside Towing", 
+      desc: "Emergency recovery and flatbed transport to our Tirupati workshop." 
     },
     { 
       icon: <Shield className="w-10 h-10 mb-4 text-[#D7E2EA]" />, 

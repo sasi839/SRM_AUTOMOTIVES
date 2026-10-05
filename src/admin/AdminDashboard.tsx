@@ -44,13 +44,13 @@ export const AdminDashboard: React.FC = () => {
   // Business Content State
   const [content, setContent] = useState<SiteContent>({
     id: '',
-    business_name: 'SRM AUTOMOTIVES',
+    business_name: 'SREE RAJA RAJESWARI MOTORS',
     owner_name: 'Lokesh',
     primary_phone: '+91 8919594039',
     secondary_phone: '',
     whatsapp_number: '918919594039',
-    email: 'Lokesh.lvrn@gimil.com',
-    address: 'SRM AUTOMOTIVES, #184, Renigunta Road, S.V. Autonagar, Tirupati, Andhra Pradesh',
+    email: 'Lokesh.lvrn@gmail.com',
+    address: 'SREE RAJA RAJESWARI MOTORS, #184, Renigunta Road, S.V. Autonagar, Tirupati, Andhra Pradesh',
     google_maps_url: 'https://maps.app.goo.gl/dnHpFsgdPKao7ALk7',
     created_at: '',
     updated_at: '',
@@ -118,7 +118,7 @@ export const AdminDashboard: React.FC = () => {
 
       // Default Hero Slides
       const defaultSlides = [
-        { section: 'hero', title: 'SRM AUTOMOTIVES', subtitle: 'The premium destination for mechanical repairs, teflon coating, and luxury vehicle restoration in Tirupati.', image_url: 'https://images.unsplash.com/photo-1611016186353-9af58c69a533?auto=format&fit=crop&w=1920&q=80', display_order: 0, is_active: true },
+        { section: 'hero', title: 'SREE RAJA RAJESWARI MOTORS', subtitle: 'The premium destination for mechanical repairs, teflon coating, and luxury vehicle restoration in Tirupati.', image_url: 'https://images.unsplash.com/photo-1611016186353-9af58c69a533?auto=format&fit=crop&w=1920&q=80', display_order: 0, is_active: true },
         { section: 'hero', title: 'EXPERT DETAILING', subtitle: 'State-of-the-art facilities equipped to handle everything from routine maintenance to complex engine rebuilds.', image_url: 'https://images.unsplash.com/photo-1635425032549-065a3962b13c?auto=format&fit=crop&w=1920&q=80', display_order: 1, is_active: true },
         { section: 'hero', title: 'PRECISION REPAIRS', subtitle: 'Highly skilled, certified technicians handling every repair with precision and genuine spare parts.', image_url: 'https://images.unsplash.com/photo-1598257006458-087169a1f08d?auto=format&fit=crop&w=1920&q=80', display_order: 2, is_active: true },
       ];
@@ -391,7 +391,7 @@ export const AdminDashboard: React.FC = () => {
 
       const { error: insertError } = await supabase.from('site_images').insert({
         section: 'hero',
-        title: newHeroTitle || 'SRM AUTOMOTIVES',
+        title: newHeroTitle || 'SREE RAJA RAJESWARI MOTORS',
         subtitle: newHeroSubtitle || '',
         image_url: uploadRes.publicUrl,
         display_order: nextOrder,
@@ -545,10 +545,10 @@ export const AdminDashboard: React.FC = () => {
       {/* Header */}
       <header className="bg-gradient-to-r from-[#121212] via-[#141414] to-[#121212] border-b border-[#E5B549]/10 px-4 sm:px-8 py-4 flex items-center justify-between sticky top-0 z-50 shadow-lg shadow-black/20">
         <div className="flex items-center gap-3">
-          <img src="/srm-logo.png" alt="SRM Automotives" className="h-9 sm:h-10 w-auto object-contain drop-shadow-md" />
+          <img src="/srm-logo.png" alt="SREE RAJA RAJESWARI MOTORS" className="h-9 sm:h-10 w-auto object-contain drop-shadow-md" />
           <div>
             <h1 className="text-lg font-black uppercase tracking-wider text-white">
-              SRM AUTOMOTIVES
+              SREE RAJA RAJESWARI MOTORS
             </h1>
             <p className="text-xs text-[#E5B549] uppercase tracking-widest font-medium">
               Admin Content & Image Manager
@@ -881,7 +881,7 @@ export const AdminDashboard: React.FC = () => {
                     disabled={uploadingHero}
                     value={newHeroTitle}
                     onChange={(e) => setNewHeroTitle(e.target.value)}
-                    placeholder="e.g. SRM AUTOMOTIVES"
+                    placeholder="e.g. SREE RAJA RAJESWARI MOTORS"
                     className="bg-[#1A1A1A] border border-[#D7E2EA]/20 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-[#E5B549]"
                   />
                 </div>

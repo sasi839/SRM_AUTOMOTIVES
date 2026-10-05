@@ -44,6 +44,7 @@ function GalleryCard({ item, index }: { item: PublicGalleryItem; index: number }
           alt={item.caption} 
           className="service-card-image"
           loading="lazy"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1c1c21] via-[#1c1c21]/40 to-transparent z-10" />
         <div className="absolute bottom-0 left-0 p-3 sm:p-6 z-20">
