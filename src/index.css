@@ -7,10 +7,10 @@
   --color-brand: #C8A44E;
   --color-brand-dark: #9A7B35;
   --color-brand-light: #D4B96A;
-  --color-surface: #111111;
-  --color-surface-light: #1A1A1A;
-  --color-border: rgba(200, 164, 78, 0.15);
-  --color-border-hover: rgba(200, 164, 78, 0.4);
+  --color-surface: #282b36;
+  --color-surface-light: #323644;
+  --color-border: rgba(200, 164, 78, 0.25);
+  --color-border-hover: rgba(200, 164, 78, 0.55);
 }
 
 @layer base {
@@ -23,14 +23,14 @@
     scroll-behavior: smooth;
   }
   html, body, #root, .main-wrapper {
-    background-color: #1c1c21;
+    background-color: #20222a;
     color: white;
   }
 }
 
 /* ── Hero heading gradient text ── */
 .hero-heading {
-  background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
+  background: linear-gradient(180deg, #A8B5C2 0%, #FFFFFF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -107,109 +107,75 @@ button:hover .cta-arrow {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(100%) brightness(0.2);
-  opacity: 0.3;
+  filter: grayscale(20%) brightness(0.8);
+  opacity: 0.85;
   transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 .service-card:hover .service-card-image,
 .service-card:focus-within .service-card-image {
-  filter: grayscale(0%) brightness(1.1);
+  filter: grayscale(0%) brightness(1.15);
   opacity: 1;
   transform: scale(1.08);
 }
 
-/* Mobile: scroll-triggered reveal instead of hover */
-@media (hover: none) {
+/* Mobile: scroll-triggered reveal instead of hover with enhanced daylight brightness */
+@media (hover: none), (max-width: 768px) {
+  .service-card {
+    background-color: #2b2e3a;
+    border-color: rgba(200, 164, 78, 0.3);
+  }
   .service-card-image {
-    filter: grayscale(100%) brightness(0.2);
-    opacity: 0.3;
-    transition: all 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    filter: grayscale(10%) brightness(0.85);
+    opacity: 0.9;
+    transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   .service-card.in-view .service-card-image {
-    filter: grayscale(0%) brightness(1.1);
+    filter: grayscale(0%) brightness(1.15);
     opacity: 1;
     transform: scale(1.08);
   }
   .service-card.in-view {
     border-color: var(--color-border-hover);
-    box-shadow: 0 0 24px rgba(200, 164, 78, 0.18), 0 8px 32px rgba(0,0,0,0.4);
-    transition: all 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    box-shadow: 0 0 24px rgba(200, 164, 78, 0.28), 0 8px 32px rgba(0,0,0,0.4);
+    transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
-}
 
-/* ── Gold glow on hover ── */
-.gold-glow:hover {
-  box-shadow: 0 0 20px rgba(200, 164, 78, 0.12), 0 8px 32px rgba(0,0,0,0.3);
-}
-
-/* ── Slide indicator active ── */
-.slide-dot-active {
-  background: var(--color-brand) !important;
-  box-shadow: 0 0 8px rgba(200, 164, 78, 0.4);
-}
-
-/* ── Reduced Motion ── */
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  .marquee-card {
+    background-color: #2b2e3a;
+    border-color: rgba(200, 164, 78, 0.3);
   }
-  .animate-ken-burns {
-    animation: none !important;
-    transform: scale(1) !important;
-  }
-  .service-card-image {
-    filter: grayscale(0%) brightness(0.4) !important;
-    opacity: 0.6 !important;
-    transition: none !important;
-  }
-}
-
-/* ── Marquee Card (matches service-card reveal) ── */
-.marquee-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 1rem;
-  border: 1px solid var(--color-border);
-  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-.marquee-card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(80%) brightness(0.3);
-  opacity: 0.5;
-  transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-.marquee-card:hover .marquee-card-image {
-  filter: grayscale(0%) brightness(1.1);
-  opacity: 1;
-  transform: scale(1.06);
-}
-.marquee-card:hover {
-  border-color: var(--color-border-hover);
-  box-shadow: 0 0 24px rgba(200, 164, 78, 0.15), 0 8px 32px rgba(0,0,0,0.35);
-}
-
-/* Mobile: scroll-triggered reveal for marquee cards */
-@media (hover: none) {
   .marquee-card-image {
-    filter: grayscale(80%) brightness(0.3);
-    opacity: 0.5;
-    transition: all 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    filter: grayscale(10%) brightness(0.85);
+    opacity: 0.9;
+    transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
   .marquee-card.in-view .marquee-card-image {
-    filter: grayscale(0%) brightness(1.1);
+    filter: grayscale(0%) brightness(1.15);
     opacity: 1;
     transform: scale(1.06);
   }
   .marquee-card.in-view {
     border-color: var(--color-border-hover);
-    box-shadow: 0 0 24px rgba(200, 164, 78, 0.18), 0 8px 32px rgba(0,0,0,0.4);
-    transition: all 1.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    box-shadow: 0 0 24px rgba(200, 164, 78, 0.28), 0 8px 32px rgba(0,0,0,0.4);
+    transition: all 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
+}
+
+/* Global Brightness & High Contrast Enhancements */
+.bg-\[\#1c1c21\] {
+  background-color: #20222a !important;
+}
+.bg-surface {
+  background-color: #2a2d37 !important;
+}
+.text-white\/50 {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+.text-white\/70 {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+.opacity-70 {
+  opacity: 0.92 !important;
 }
 
 /* ── Emergency Breakdown Button Pulse ── */

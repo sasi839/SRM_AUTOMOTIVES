@@ -30,11 +30,15 @@ import {
   Layers,
   FileCheck,
   X,
+  FileText,
+  Clock
 } from 'lucide-react';
+import { BillingErrorBoundary } from './billing/BillingErrorBoundary';
+const BillingModule = React.lazy(() => import('./billing/BillingModule').then(m => ({ default: m.BillingModule })));
 
 export const AdminDashboard: React.FC = () => {
   const { user, signOut } = useAuth();
-  const [activeTab, setActiveTab] = useState<'business' | 'hero' | 'services' | 'gallery' | 'marquee' | 'about' | 'whyus'>('business');
+  const [activeTab, setActiveTab] = useState<'business' | 'hero' | 'services' | 'gallery' | 'marquee' | 'about' | 'whyus' | 'billing'>('business');
   
   // Status messages
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -717,7 +721,39 @@ export const AdminDashboard: React.FC = () => {
             <Grid className="w-4 h-4" />
             Why Us ({galleryItems.filter(g => g.category === 'WhyUs').length})
           </button>
+          
+          {/* BILLING TAB BUTTON */}
+          <button
+            onClick={() => setActiveTab('billing')}
+            className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              activeTab === 'billing'
+                ? 'bg-[#E5B549] text-black shadow-lg shadow-[#E5B549]/20'
+                : 'bg-[#1A1A1A] text-[#D7E2EA]/70 hover:text-white border border-[#D7E2EA]/10'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            Billing
+            <div className="flex items-center gap-1 ml-2 bg-red-500/20 px-2 py-0.5 rounded-full border border-red-500/30">
+               <span className="text-[9px] font-black text-red-400">BETA</span>
+               <Clock className="w-3 h-3 text-red-400 animate-pulse" />
+            </div>
+          </button>
         </div>
+
+        {/* BILLING MODULE */}
+        {activeTab === 'billing' && (
+          <div className="bg-[#121212] border border-[#D7E2EA]/10 rounded-2xl flex flex-col min-h-[85vh]">
+            <BillingErrorBoundary>
+              <React.Suspense fallback={
+                <div className="flex-1 flex items-center justify-center text-[#D7E2EA]/50 py-20">
+                  <Loader2 className="w-8 h-8 animate-spin text-[#E5B549]" />
+                </div>
+              }>
+                <BillingModule />
+              </React.Suspense>
+            </BillingErrorBoundary>
+          </div>
+        )}
 
         {/* TAB 1: BUSINESS INFO */}
         {activeTab === 'business' && (

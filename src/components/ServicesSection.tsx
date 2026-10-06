@@ -67,7 +67,7 @@ function ServiceCard({ service, index, onNavigate }: { service: PublicServiceIte
         className="service-card group relative overflow-hidden bg-surface border border-border rounded-2xl p-3 sm:p-8 aspect-square sm:aspect-auto sm:min-h-[220px] flex flex-col justify-end hover:-translate-y-1 hover:border-border-hover transition-all duration-300 gold-glow cursor-pointer block"
       >
         <img src={service.image} className="service-card-image" loading="lazy" decoding="async" alt={`${service.name} Service at SREE RAJA RAJESWARI MOTORS Tirupati`} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10" />
         <div className="relative z-20">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-brand/10 flex items-center justify-center mb-2 sm:mb-4 group-hover:bg-brand/20 transition-colors duration-300">
             <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 text-brand" />

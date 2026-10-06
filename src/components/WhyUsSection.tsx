@@ -46,7 +46,7 @@ function StatCard({ stat, index }: { stat: { number: string, label: string, desc
         className="service-card group relative overflow-hidden bg-surface border border-border rounded-2xl p-3 sm:p-6 md:p-8 aspect-square sm:aspect-auto sm:min-h-[220px] flex flex-col items-center justify-center text-center hover:-translate-y-1 hover:border-border-hover transition-all duration-300 gold-glow cursor-pointer"
       >
         <img src={stat.image} className="service-card-image" loading="lazy" decoding="async" alt={stat.label} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent z-10" />
         <div className="relative z-20">
           <span className="font-black text-3xl sm:text-4xl md:text-6xl lg:text-7xl mb-2 sm:mb-4 bg-clip-text text-transparent bg-gradient-to-b from-brand-light to-brand block">
             {stat.number}

@@ -1,5 +1,5 @@
-import { supabase } from '../lib/supabase';
-import { WorkItem, Invoice, BillLineItem, PrintSearchFilter, WorkType } from '../types/billing';
+import { supabase } from '../../../lib/supabase';
+import type { WorkItem, Invoice, PrintSearchFilter, WorkType } from '../types/billing';
 
 /**
  * DEFAULT SEED CATALOGUE FOR DEVELOPMENT FALLBACK
@@ -33,31 +33,47 @@ export class BillingService {
     const prefix = `SRM-${yearMonth}-`;
     
     try {
+      // 1. Fetch all invoice numbers for the current month from Supabase
       const { data } = await supabase
         .from('billing_invoices')
         .select('invoice_number')
-        .ilike('invoice_number', `${prefix}%`)
-        .order('invoice_number', { ascending: false })
-        .limit(1);
+        .ilike('invoice_number', `${prefix}%`);
 
-      if (data && data.length > 0) {
-        const lastNo = data[0].invoice_number;
-        const numPart = parseInt(lastNo.replace(prefix, ''), 10);
-        if (!isNaN(numPart)) {
-          const nextNum = (numPart + 1).toString().padStart(4, '0');
-          return `${prefix}${nextNum}`;
-        }
+      const dbNumbers: number[] = [];
+      if (data && Array.isArray(data)) {
+        data.forEach((row: any) => {
+          if (row.invoice_number) {
+            const clean = row.invoice_number.replace(/^#/, '');
+            const numPart = parseInt(clean.replace(prefix, ''), 10);
+            if (!isNaN(numPart)) dbNumbers.push(numPart);
+          }
+        });
       }
 
-      const localMatches = localInvoicesStore.filter((inv) => inv.invoice_number.startsWith(prefix));
-      if (localMatches.length > 0) {
-        const nextNum = (localMatches.length + 1).toString().padStart(4, '0');
-        return `${prefix}${nextNum}`;
-      }
+      // 2. Extract numbers from local store fallback
+      const localNumbers = localInvoicesStore
+        .filter((inv) => inv.invoice_number.replace(/^#/, '').startsWith(prefix))
+        .map((inv) => {
+          const numPart = parseInt(inv.invoice_number.replace(/^#/, '').replace(prefix, ''), 10);
+          return isNaN(numPart) ? 0 : numPart;
+        });
 
-      return `${prefix}0001`;
-    } catch {
-      const nextNum = (localInvoicesStore.length + 1).toString().padStart(4, '0');
+      // 3. Find the maximum existing numeric suffix across DB and local store
+      const allNumbers = [...dbNumbers, ...localNumbers];
+      const maxNum = allNumbers.length > 0 ? Math.max(...allNumbers) : 0;
+      const nextNum = (maxNum + 1).toString().padStart(4, '0');
+
+      return `${prefix}${nextNum}`;
+    } catch (err) {
+      console.error('Error generating invoice number, falling back to local count:', err);
+      const localNumbers = localInvoicesStore
+        .filter((inv) => inv.invoice_number.replace(/^#/, '').startsWith(prefix))
+        .map((inv) => {
+          const numPart = parseInt(inv.invoice_number.replace(/^#/, '').replace(prefix, ''), 10);
+          return isNaN(numPart) ? 0 : numPart;
+        });
+      const maxNum = localNumbers.length > 0 ? Math.max(...localNumbers) : 0;
+      const nextNum = (maxNum + 1).toString().padStart(4, '0');
       return `${prefix}${nextNum}`;
     }
   }
@@ -76,7 +92,7 @@ export class BillingService {
         .ilike('number_plate', `%${cleanQuery}%`)
         .limit(20);
 
-      const dbPlates = data ? data.map((d) => d.number_plate.toUpperCase()) : [];
+      const dbPlates = data ? (data as any[]).map((d) => d.number_plate.toUpperCase()) : [];
       const localPlates = localInvoicesStore
         .map((inv) => inv.number_plate.toUpperCase())
         .filter((plate) => plate.includes(cleanQuery));
@@ -158,14 +174,6 @@ export class BillingService {
       };
     }
 
-    const newItem: WorkItem = {
-      id: `w-${Date.now()}`,
-      work_name: cleanName,
-      work_type: workItem.work_type,
-      is_active: workItem.is_active ?? true,
-      created_at: new Date().toISOString(),
-    };
-
     try {
       const { data, error } = await supabase
         .from('billing_works')
@@ -173,7 +181,7 @@ export class BillingService {
           work_name: cleanName,
           work_type: workItem.work_type,
           is_active: workItem.is_active ?? true,
-        }])
+        }] as any)
         .select()
         .single();
 
@@ -244,8 +252,8 @@ export class BillingService {
     }
 
     try {
-      const { data, error } = await supabase
-        .from('billing_works')
+      const { data, error } = await (supabase
+        .from('billing_works') as any)
         .update(updates)
         .eq('id', id)
         .select()
@@ -282,8 +290,8 @@ export class BillingService {
       const isReferenced = Boolean(refItems && refItems.length > 0);
 
       if (isReferenced) {
-        await supabase
-          .from('billing_works')
+        await (supabase
+          .from('billing_works') as any)
           .update({ is_active: false })
           .eq('id', id);
 
@@ -365,15 +373,30 @@ export class BillingService {
       })),
     };
 
+    let uniqueInvoiceNo = newInvoice.invoice_number;
+    try {
+      const { data: existing } = await supabase
+        .from('billing_invoices')
+        .select('id')
+        .eq('invoice_number', uniqueInvoiceNo)
+        .maybeSingle();
+
+      if (existing) {
+        uniqueInvoiceNo = await this.generateNextInvoiceNumber();
+      }
+    } catch (err) {
+      console.warn('Could not check invoice number collision:', err);
+    }
+
     try {
       const { data: headerData, error: headerError } = await supabase
         .from('billing_invoices')
         .insert([{
-          invoice_number: newInvoice.invoice_number,
+          invoice_number: uniqueInvoiceNo,
           number_plate: newInvoice.number_plate,
           mobile_number: newInvoice.mobile_number || null,
           grand_total: newInvoice.grand_total,
-        }])
+        }] as any)
         .select()
         .single();
 
@@ -382,8 +405,9 @@ export class BillingService {
         return { success: false, error: `Database error saving invoice: ${headerError.message}` };
       }
 
+      const invoiceId = (headerData as any).id;
       const lineItemRecords = newInvoice.items.map((item) => ({
-        invoice_id: headerData.id,
+        invoice_id: invoiceId,
         work_id: (item.work_id && /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(item.work_id)) ? item.work_id : null,
         s_no: item.s_no,
         work_name: item.work_name,
@@ -395,18 +419,19 @@ export class BillingService {
 
       const { error: itemsError } = await supabase
         .from('billing_invoice_items')
-        .insert(lineItemRecords);
+        .insert(lineItemRecords as any);
 
       if (itemsError) {
-        await supabase.from('billing_invoices').delete().eq('id', headerData.id);
+        await supabase.from('billing_invoices').delete().eq('id', invoiceId);
         console.error('Supabase invoice items insert error:', itemsError);
         return { success: false, error: `Database error saving line items: ${itemsError.message}` };
       }
 
       const createdInvoice: Invoice = {
         ...newInvoice,
-        id: headerData.id,
-        created_at: headerData.created_at || newInvoice.created_at,
+        invoice_number: uniqueInvoiceNo,
+        id: invoiceId,
+        created_at: (headerData as any).created_at || newInvoice.created_at,
       };
 
       localInvoicesStore.unshift(createdInvoice);

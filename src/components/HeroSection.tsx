@@ -49,8 +49,8 @@ const HeroSection = () => {
             className="absolute inset-0 w-full h-full object-cover animate-ken-burns"
           />
         </AnimatePresence>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 via-50% to-[#1c1c21]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-[#20222a]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
       </div>
 
       {/* Header / Navbar (Z-30) */}

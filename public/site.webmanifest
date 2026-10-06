@@ -1,0 +1,22 @@
+{
+  "name": "Sree Raja Rajeswari Motors",
+  "short_name": "Sree Raja Rajeswari Motors",
+  "icons": [
+    {
+      "src": "/srm-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/srm-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1c1c21",
+  "theme_color": "#C8A44E"
+}

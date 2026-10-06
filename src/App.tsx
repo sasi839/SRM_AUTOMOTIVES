@@ -53,7 +53,7 @@ function App() {
   const pathname = window.location.pathname;
   const hash = window.location.hash;
 
-  const isAdminRoute = pathname === '/admin' || hash === '#admin';
+  const isAdminRoute = pathname === '/admin' || hash === '#admin' || pathname === '/billing' || hash === '#billing';
   const isServiceRoute = pathname.startsWith('/services/');
   const serviceSlug = isServiceRoute ? pathname.replace('/services/', '').replace(/\/$/, '') : '';
   const currentService = SERVICE_DETAILS[serviceSlug];
@@ -113,8 +113,11 @@ function App() {
         "serviceType": currentService.h1,
         "provider": {
           "@type": "AutoRepair",
-          "name": "SREE RAJA RAJESWARI MOTORS",
+          "name": "Sree Raja Rajeswari Motors",
+          "alternateName": "SRM Motors",
           "url": "https://sreerajarajeswarimotors.com/",
+          "logo": "https://sreerajarajeswarimotors.com/srm-logo.png",
+          "image": "https://sreerajarajeswarimotors.com/srm-logo.png",
           "telephone": "+91 8919594039",
           "email": "Lokesh.lvrn@gmail.com",
           "address": {
@@ -133,7 +136,7 @@ function App() {
       });
 
     } else {
-      // Homepage: index, follow, AutoRepair JSON-LD
+      // Homepage: index, follow, WebSite & AutoRepair JSON-LD
       robotsMeta.setAttribute('content', 'index, follow');
       document.title = 'SREE RAJA RAJESWARI MOTORS | Car Service, Repairs & Teflon Coating in Tirupati';
       
@@ -156,30 +159,49 @@ function App() {
       }
       jsonLdScript.textContent = JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "AutoRepair",
-        "name": "SREE RAJA RAJESWARI MOTORS",
-        "url": "https://sreerajarajeswarimotors.com/",
-        "telephone": "+91 8919594039",
-        "email": "Lokesh.lvrn@gmail.com",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "#184, Renigunta Road, S.V. Autonagar",
-          "addressLocality": "Tirupati",
-          "addressRegion": "Andhra Pradesh",
-          "addressCountry": "IN"
-        },
-        "hasOfferCatalog": {
-          "@type": "OfferCatalog",
-          "name": "Automotive Services",
-          "itemListElement": Object.values(SERVICE_DETAILS).map(s => ({
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": s.name,
-              "description": s.metaDescription
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://sreerajarajeswarimotors.com/#website",
+            "url": "https://sreerajarajeswarimotors.com/",
+            "name": "Sree Raja Rajeswari Motors",
+            "alternateName": ["SRM Motors", "Sree Raja Rajeswari Motors Tirupati"],
+            "publisher": {
+              "@id": "https://sreerajarajeswarimotors.com/#organization"
             }
-          }))
-        }
+          },
+          {
+            "@type": "AutoRepair",
+            "@id": "https://sreerajarajeswarimotors.com/#organization",
+            "name": "Sree Raja Rajeswari Motors",
+            "alternateName": "SRM Motors",
+            "url": "https://sreerajarajeswarimotors.com/",
+            "logo": "https://sreerajarajeswarimotors.com/srm-logo.png",
+            "image": "https://sreerajarajeswarimotors.com/srm-logo.png",
+            "telephone": "+91 8919594039",
+            "email": "Lokesh.lvrn@gmail.com",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "#184, Renigunta Road, S.V. Autonagar",
+              "addressLocality": "Tirupati",
+              "addressRegion": "Andhra Pradesh",
+              "postalCode": "517506",
+              "addressCountry": "IN"
+            },
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Automotive Services",
+              "itemListElement": Object.values(SERVICE_DETAILS).map(s => ({
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": s.name,
+                  "description": s.metaDescription
+                }
+              }))
+            }
+          }
+        ]
       });
     }
   }, [currentPath, isAdminRoute, isServiceRoute, currentService]);
