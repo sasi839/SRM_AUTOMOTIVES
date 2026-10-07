@@ -29,7 +29,7 @@ const HeroSection = () => {
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + activeSlides.length) % activeSlides.length);
 
   const phoneHref = `tel:${businessContent.primary_phone || '+918919594039'}`;
-  const whatsappHref = `https://wa.me/${businessContent.whatsapp_number || '918919594039'}`;
+  const whatsappHref = `https://api.whatsapp.com/send?phone=${businessContent.whatsapp_number || '918919594039'}`;
 
   return (
     <section id="hero" className="relative aspect-[4/3] sm:aspect-video md:aspect-auto md:h-[100dvh] min-h-[360px] md:min-h-0 w-full flex flex-col bg-[#1c1c21] overflow-hidden">

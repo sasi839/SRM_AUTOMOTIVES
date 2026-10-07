@@ -30,7 +30,7 @@ const EmergencyBreakdownButton = () => {
       const fallbackMsg = encodeURIComponent(
         `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 Location: (Unable to detect - please share manually)\n\n🚗 SRM - Emergency Breakdown Service`
       );
-      window.open(`https://wa.me/${whatsappNumber}?text=${fallbackMsg}`, '_blank');
+      window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${fallbackMsg}`, '_blank');
       setIsLocating(false);
       setIsExpanded(false);
       return;
@@ -45,7 +45,7 @@ const EmergencyBreakdownButton = () => {
           `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 *My Live Location:*\n${mapsLink}\n\n📌 Coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}\n\n🚗 SRM - Emergency Breakdown Service`
         );
 
-        window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+        window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${message}`, '_blank');
         setIsLocating(false);
         setIsExpanded(false);
       },
@@ -60,7 +60,7 @@ const EmergencyBreakdownButton = () => {
             `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 Location: (Permission denied - please share location manually in chat)\n\n🚗 SRM - Emergency Breakdown Service`
           );
           setTimeout(() => {
-            window.open(`https://wa.me/${whatsappNumber}?text=${fallbackMsg}`, '_blank');
+            window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${fallbackMsg}`, '_blank');
             setIsLocating(false);
             setIsExpanded(false);
             setError(null);
@@ -69,7 +69,7 @@ const EmergencyBreakdownButton = () => {
           const fallbackMsg = encodeURIComponent(
             `🚨 *EMERGENCY BREAKDOWN SERVICE* 🚨\n\nI need immediate roadside assistance!\n\n📍 Location: (Could not detect - please share manually)\n\n🚗 SRM - Emergency Breakdown Service`
           );
-          window.open(`https://wa.me/${whatsappNumber}?text=${fallbackMsg}`, '_blank');
+          window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${fallbackMsg}`, '_blank');
           setIsLocating(false);
           setIsExpanded(false);
         }

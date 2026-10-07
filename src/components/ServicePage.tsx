@@ -32,7 +32,7 @@ export const ServicePage: React.FC<ServicePageProps> = ({ slug, onNavigate }) =>
   }
 
   const phoneHref = `tel:${businessContent.primary_phone || '+918919594039'}`;
-  const whatsappHref = `https://wa.me/${businessContent.whatsapp_number || '918919594039'}`;
+  const whatsappHref = `https://api.whatsapp.com/send?phone=${businessContent.whatsapp_number || '918919594039'}`;
   const mapsUrl = businessContent.google_maps_url || 'https://maps.app.goo.gl/dnHpFsgdPKao7ALk7';
 
   // Get other services for internal linking

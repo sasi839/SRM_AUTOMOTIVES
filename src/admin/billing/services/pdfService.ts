@@ -72,7 +72,7 @@ export class PdfService {
         filename,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { 
-          scale: 2, 
+          scale: 1.5, 
           useCORS: true, 
           logging: false, 
           allowTaint: true, 
@@ -127,8 +127,8 @@ Thank you for choosing *SREE RAJA RAJESWARI MOTORS* for your vehicle service & m
 
     const encodedMessage = encodeURIComponent(messageText);
     return cleanPhone 
-      ? `https://wa.me/91${cleanPhone}?text=${encodedMessage}`
-      : `https://wa.me/?text=${encodedMessage}`;
+      ? `https://api.whatsapp.com/send?phone=91${cleanPhone}&text=${encodedMessage}`
+      : `https://api.whatsapp.com/send?text=${encodedMessage}`;
   }
 
   /**
@@ -170,8 +170,8 @@ Thank you for choosing *SREE RAJA RAJESWARI MOTORS*!`;
 
     const encodedMessage = encodeURIComponent(messageText);
     return cleanPhone 
-      ? `https://wa.me/91${cleanPhone}?text=${encodedMessage}`
-      : `https://wa.me/?text=${encodedMessage}`;
+      ? `https://api.whatsapp.com/send?phone=91${cleanPhone}&text=${encodedMessage}`
+      : `https://api.whatsapp.com/send?text=${encodedMessage}`;
   }
 
   /**
