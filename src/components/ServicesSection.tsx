@@ -16,6 +16,7 @@ const getServiceSlug = (name: string) => {
   if (norm.includes('breakdown')) return 'breakdown-services';
   if (norm.includes('towing')) return 'roadside-towing';
   if (norm.includes('spare')) return 'spare-parts';
+  if (norm.includes('electrical')) return 'electrical-work';
   return norm.replace(/[^a-z0-9]+/g, '-');
 };
 

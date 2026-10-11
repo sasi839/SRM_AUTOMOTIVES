@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import { ShieldCheck, Database, Wrench, AlertTriangle, Layers } from 'lucide-react';
+import { useSiteData } from '../../../../context/SiteDataContext';
 
 interface BillingHeaderProps {
   dbConnected: boolean;
@@ -8,6 +9,7 @@ interface BillingHeaderProps {
 }
 
 export const BillingHeader: React.FC<BillingHeaderProps> = ({ dbConnected, dbStatusMessage }) => {
+  const { businessContent } = useSiteData();
   return (
     <header className="bg-slate-900/90 border-b border-slate-800 backdrop-blur-md sticky top-0 z-30 px-6 py-4">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -15,7 +17,12 @@ export const BillingHeader: React.FC<BillingHeaderProps> = ({ dbConnected, dbSta
         {/* Brand & Title */}
         <div className="flex items-center gap-3">
           <div className="h-10 px-2 py-1 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center shadow-lg">
-            <img src="/srm-logo.png" alt="SREE RAJA RAJESWARI MOTORS Logo" className="h-8 object-contain" />
+            <img
+              src={businessContent.logo_url || "/srm-logo.webp"}
+              onError={(e) => { e.currentTarget.src = '/srm-logo.png'; }}
+              alt={`${businessContent.business_name || 'SREE RAJA RAJESWARI MOTORS'} Logo`}
+              className="h-8 object-contain"
+            />
           </div>
           <div>
             <div className="flex items-center gap-2">

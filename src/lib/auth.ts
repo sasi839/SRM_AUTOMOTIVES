@@ -60,20 +60,22 @@ export async function checkIsAdmin(userId: string): Promise<boolean> {
   if (!userId) return false;
 
   try {
-    // Attempt auto-inserting user into admin_users table
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      await supabase.from('admin_users').upsert({
-        id: user.id,
-        email: user.email || '',
-      } as never, { onConflict: 'id' });
-    }
-  } catch (err) {
-    console.warn('Auto admin registration note:', err);
-  }
+    // Only query if the user exists in the admin_users table
+    const { data, error } = await supabase
+      .from('admin_users')
+      .select('id')
+      .eq('id', userId)
+      .single();
 
-  // Any authenticated Supabase Auth user is granted access
-  return true;
+    if (error || !data) {
+      return false;
+    }
+    
+    return true;
+  } catch (err) {
+    console.error('Error verifying admin status:', err);
+    return false;
+  }
 }
 
 /**

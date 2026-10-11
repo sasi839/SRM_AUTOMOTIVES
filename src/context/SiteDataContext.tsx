@@ -4,7 +4,7 @@ import type { SiteContent, SiteImage } from '../lib/supabase';
 import { galleryData } from '../data/galleryData';
 import { 
   Wrench, Hammer, PaintBucket, Sparkles, Truck, 
-  Settings, Wind, LifeBuoy, Car, ShieldCheck 
+  Settings, Wind, LifeBuoy, Car, ShieldCheck, Zap
 } from 'lucide-react';
 
 // Static Defaults
@@ -18,6 +18,8 @@ const DEFAULT_BUSINESS_CONTENT: SiteContent = {
   email: 'Lokesh.lvrn@gmail.com',
   address: 'SREE RAJA RAJESWARI MOTORS\n#184, Renigunta Road\nS.V. Autonagar, Tirupati\nAndhra Pradesh',
   google_maps_url: 'https://maps.app.goo.gl/dnHpFsgdPKao7ALk7',
+  logo_url: '/srm-logo.webp',
+  breakdown_image_url: '/emergency-breakdown.webp',
   created_at: '',
   updated_at: '',
 };
@@ -32,7 +34,8 @@ const DEFAULT_SERVICES = [
   { name: 'Roadside Assistance', icon: LifeBuoy, desc: 'Emergency support when you are stranded on the road.', image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80' },
   { name: 'Breakdown Services', icon: Car, desc: 'On-spot troubleshooting for unexpected vehicle breakdowns.', image: 'https://images.unsplash.com/photo-1598257006458-087169a1f08d?auto=format&fit=crop&w=800&q=80' },
   { name: 'Roadside Towing', icon: Truck, desc: 'Safe and secure vehicle towing to our service center.', image: 'https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=800&q=80' },
-  { name: 'Spare Parts', icon: Settings, desc: '100% genuine OEM spare parts for all major brands.', image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80' }
+  { name: 'Spare Parts', icon: Settings, desc: '100% genuine OEM spare parts for all major brands.', image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80' },
+  { name: 'Electrical Work', icon: Zap, desc: 'Expert auto electrical troubleshooting and wiring repairs.', image: 'https://images.unsplash.com/photo-1563261683-9e4ba6f4526d?auto=format&fit=crop&w=800&q=80' }
 ];
 
 export interface PublicHeroSlide {
@@ -82,6 +85,7 @@ const getServiceIcon = (title: string) => {
     case 'breakdown services': return Car;
     case 'roadside towing': return Truck;
     case 'spare parts': return Settings;
+    case 'electrical work': return Zap;
     default: return Wrench;
   }
 };
@@ -117,7 +121,7 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       // 2. Fetch Active Site Images
       const { data: imagesData } = await supabase
         .from('site_images')
-        .select('*')
+        .select('id, section, category, image_url, title, subtitle')
         .eq('is_active', true)
         .order('display_order', { ascending: true });
 
@@ -138,15 +142,32 @@ export const SiteDataProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         }
 
         // Process Services Images
+        // Merge DB service images into the DEFAULT_SERVICES to maintain a stable list of all services
         const dbServices = items.filter((img) => img.section === 'service');
         if (dbServices.length > 0) {
-          const mappedServices = dbServices.map(img => ({
-            name: img.title || 'Service',
-            icon: getServiceIcon(img.title || ''),
-            desc: img.subtitle || '',
-            image: img.image_url,
-          }));
-          setServices(mappedServices);
+          const mergedServices = DEFAULT_SERVICES.map(defaultSvc => {
+            const dbMatch = dbServices.find(img => img.title === defaultSvc.name);
+            if (dbMatch) {
+              return {
+                ...defaultSvc,
+                image: dbMatch.image_url,
+                desc: dbMatch.subtitle || defaultSvc.desc,
+              };
+            }
+            return defaultSvc;
+          });
+          
+          // Also append any NEW services created in DB that aren't in DEFAULT_SERVICES
+          const newDbServices = dbServices
+            .filter(img => !DEFAULT_SERVICES.some(s => s.name === img.title))
+            .map(img => ({
+              name: img.title || 'Service',
+              icon: getServiceIcon(img.title || ''),
+              desc: img.subtitle || '',
+              image: img.image_url,
+            }));
+
+          setServices([...mergedServices, ...newDbServices]);
         }
 
         // Process Gallery Items

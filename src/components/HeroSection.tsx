@@ -58,7 +58,14 @@ const HeroSection = () => {
         <div className="flex justify-between items-center px-4 md:px-10 py-3 max-w-7xl mx-auto">
           {/* Logo / Brand */}
           <a href="/" className="flex items-center gap-3 group" aria-label="SREE RAJA RAJESWARI MOTORS Homepage">
-            <img src="/srm-logo.png" width="180" height="48" alt="SREE RAJA RAJESWARI MOTORS Logo - Car Service Center in Tirupati" className="h-9 sm:h-11 md:h-12 w-auto object-contain drop-shadow-xl hover:scale-105 transition-transform duration-300" />
+            <img
+              src={businessContent.logo_url || '/srm-logo.webp'}
+              onError={(e) => { e.currentTarget.src = '/srm-logo.png'; }}
+              width="180"
+              height="48"
+              alt="SREE RAJA RAJESWARI MOTORS Logo - Car Service Center in Tirupati"
+              className="h-9 sm:h-11 md:h-12 w-auto object-contain drop-shadow-xl hover:scale-105 transition-transform duration-300"
+            />
             <span className="font-black text-lg sm:text-2xl tracking-tighter text-white uppercase group-hover:text-red-500 transition-colors hidden sm:inline">
               {businessContent.business_name || 'SREE RAJA RAJESWARI MOTORS'}
             </span>
@@ -124,7 +131,12 @@ const HeroSection = () => {
           >
             <div className="flex justify-between items-center border-b border-white/10 pb-6">
               <div className="flex items-center gap-3">
-                <img src="/srm-logo.png" alt="SREE RAJA RAJESWARI MOTORS Logo" className="h-10 sm:h-12 w-auto object-contain drop-shadow-lg" />
+                <img
+                  src={businessContent.logo_url || '/srm-logo.webp'}
+                  onError={(e) => { e.currentTarget.src = '/srm-logo.png'; }}
+                  alt="SREE RAJA RAJESWARI MOTORS Logo"
+                  className="h-10 sm:h-12 w-auto object-contain drop-shadow-lg"
+                />
                 <span className="font-black text-xl tracking-tighter text-white uppercase">
                   {businessContent.business_name || 'SREE RAJA RAJESWARI MOTORS'}
                 </span>

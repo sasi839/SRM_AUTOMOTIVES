@@ -110,7 +110,8 @@ const EmergencyBreakdownButton = () => {
               {/* Badge */}
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-red-500/40 shadow-lg shadow-red-500/20">
                 <img
-                  src="/emergency-breakdown.png"
+                  src={businessContent.breakdown_image_url || '/emergency-breakdown.webp'}
+                  onError={(e) => { e.currentTarget.src = '/emergency-breakdown.png'; }}
                   width="80"
                   height="80"
                   alt="Emergency Breakdown Service"
@@ -181,7 +182,8 @@ const EmergencyBreakdownButton = () => {
         {/* Button */}
         <div className="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-full overflow-hidden border-[3px] border-red-500/60 shadow-2xl shadow-red-500/30 group-hover:border-red-400 group-hover:shadow-red-400/40 transition-all duration-300 bg-[#1a1a1a]">
           <img
-            src="/emergency-breakdown.png"
+            src={businessContent.breakdown_image_url || '/emergency-breakdown.webp'}
+            onError={(e) => { e.currentTarget.src = '/emergency-breakdown.png'; }}
             width="72"
             height="72"
             alt="Emergency Breakdown Service"

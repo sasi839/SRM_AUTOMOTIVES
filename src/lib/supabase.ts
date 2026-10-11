@@ -10,6 +10,8 @@ export interface SiteContent {
   email?: string | null;
   address?: string | null;
   google_maps_url?: string | null;
+  logo_url?: string | null;
+  breakdown_image_url?: string | null;
   created_at: string;
   updated_at: string;
 }

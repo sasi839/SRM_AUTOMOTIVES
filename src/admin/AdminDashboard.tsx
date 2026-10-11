@@ -56,6 +56,8 @@ export const AdminDashboard: React.FC = () => {
     email: 'Lokesh.lvrn@gmail.com',
     address: 'SREE RAJA RAJESWARI MOTORS, #184, Renigunta Road, S.V. Autonagar, Tirupati, Andhra Pradesh',
     google_maps_url: 'https://maps.app.goo.gl/dnHpFsgdPKao7ALk7',
+    logo_url: '/srm-logo.webp',
+    breakdown_image_url: '/emergency-breakdown.webp',
     created_at: '',
     updated_at: '',
   });
@@ -82,6 +84,9 @@ export const AdminDashboard: React.FC = () => {
   const [newServiceSubtitle, setNewServiceSubtitle] = useState('');
   const [newServiceFile, setNewServiceFile] = useState<File | null>(null);
   const [uploadingService, setUploadingService] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingBreakdownImg, setUploadingBreakdownImg] = useState(false);
+
 
 
   // Confirmation Modal State
@@ -138,7 +143,8 @@ export const AdminDashboard: React.FC = () => {
         { section: 'service', title: 'Roadside Assistance', subtitle: 'Emergency support when you are stranded on the road.', image_url: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80', display_order: 7, is_active: true },
         { section: 'service', title: 'Breakdown Services', subtitle: 'On-spot troubleshooting for unexpected vehicle breakdowns.', image_url: 'https://images.unsplash.com/photo-1598257006458-087169a1f08d?auto=format&fit=crop&w=800&q=80', display_order: 8, is_active: true },
         { section: 'service', title: 'Roadside Towing', subtitle: 'Safe and secure vehicle towing to our service center.', image_url: 'https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&w=800&q=80', display_order: 9, is_active: true },
-        { section: 'service', title: 'Spare Parts', subtitle: '100% genuine OEM spare parts for all major brands.', image_url: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80', display_order: 10, is_active: true }
+        { section: 'service', title: 'Spare Parts', subtitle: '100% genuine OEM spare parts for all major brands.', image_url: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80', display_order: 10, is_active: true },
+        { section: 'service', title: 'Electrical Work', subtitle: 'Expert auto electrical troubleshooting and wiring repairs.', image_url: 'https://images.unsplash.com/photo-1563261683-9e4ba6f4526d?auto=format&fit=crop&w=800&q=80', display_order: 11, is_active: true }
       ];
 
       // Default Gallery / Our Works
@@ -186,6 +192,28 @@ export const AdminDashboard: React.FC = () => {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         }));
+      } else {
+        // Ensure new default services (like Electrical Work) are shown in Admin panel if not in DB
+        const requiredServices = ['Electrical Work'];
+        requiredServices.forEach((reqName) => {
+          if (!servs.some((s) => s.title === reqName)) {
+            const defaultSvc = defaultServices.find((d) => d.title === reqName);
+            if (defaultSvc) {
+              servs.push({
+                id: `default-service-${reqName}`,
+                section: 'service',
+                title: defaultSvc.title,
+                subtitle: defaultSvc.subtitle,
+                category: null,
+                image_url: defaultSvc.image_url,
+                display_order: defaultSvc.display_order,
+                is_active: defaultSvc.is_active,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              } as any);
+            }
+          }
+        });
       }
 
       if (gall.length === 0) {
@@ -236,6 +264,8 @@ export const AdminDashboard: React.FC = () => {
             email: content.email,
             address: content.address,
             google_maps_url: content.google_maps_url,
+            logo_url: content.logo_url,
+            breakdown_image_url: content.breakdown_image_url,
             updated_at: new Date().toISOString(),
           } as never)
           .eq('id', content.id);
@@ -253,6 +283,8 @@ export const AdminDashboard: React.FC = () => {
             email: content.email,
             address: content.address,
             google_maps_url: content.google_maps_url,
+            logo_url: content.logo_url,
+            breakdown_image_url: content.breakdown_image_url,
           } as never)
           .select()
           .single();
@@ -266,6 +298,86 @@ export const AdminDashboard: React.FC = () => {
       showFeedback('error', (err as any).message || 'Failed to update business content.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  // 1B. BRAND LOGO UPLOAD
+  const handleLogoUpload = async (file: File) => {
+    const val = validateImageFile(file);
+    if (!val.valid) {
+      showFeedback('error', val.error || 'Invalid logo image file.');
+      return;
+    }
+
+    setUploadingLogo(true);
+    showFeedback('success', 'Uploading brand logo to Supabase Storage...');
+
+    try {
+      const res = await uploadWebsiteImage(file, 'hero');
+      if (res.error || !res.publicUrl) {
+        throw res.error || new Error('Failed to upload logo to Supabase Storage');
+      }
+
+      const newLogoUrl = res.publicUrl;
+
+      if (content.id) {
+        const { error } = await supabase
+          .from('site_content')
+          .update({
+            logo_url: newLogoUrl,
+            updated_at: new Date().toISOString(),
+          } as never)
+          .eq('id', content.id);
+
+        if (error) throw error;
+      }
+
+      setContent((prev) => ({ ...prev, logo_url: newLogoUrl }));
+      showFeedback('success', 'Brand logo updated successfully in Supabase Storage!');
+    } catch (err: unknown) {
+      showFeedback('error', (err as any).message || 'Failed to update logo image.');
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  // 1C. EMERGENCY BREAKDOWN IMAGE UPLOAD
+  const handleBreakdownImageUpload = async (file: File) => {
+    const val = validateImageFile(file);
+    if (!val.valid) {
+      showFeedback('error', val.error || 'Invalid breakdown image file.');
+      return;
+    }
+
+    setUploadingBreakdownImg(true);
+    showFeedback('success', 'Uploading breakdown image to Supabase Storage...');
+
+    try {
+      const res = await uploadWebsiteImage(file, 'hero');
+      if (res.error || !res.publicUrl) {
+        throw res.error || new Error('Failed to upload breakdown image to Supabase Storage');
+      }
+
+      const newBreakdownUrl = res.publicUrl;
+
+      if (content.id) {
+        const { error } = await supabase
+          .from('site_content')
+          .update({
+            breakdown_image_url: newBreakdownUrl,
+            updated_at: new Date().toISOString(),
+          } as never)
+          .eq('id', content.id);
+
+        if (error) throw error;
+      }
+
+      setContent((prev) => ({ ...prev, breakdown_image_url: newBreakdownUrl }));
+      showFeedback('success', 'Emergency Breakdown image updated successfully in Supabase Storage!');
+    } catch (err: unknown) {
+      showFeedback('error', (err as any).message || 'Failed to update breakdown image.');
+    } finally {
+      setUploadingBreakdownImg(false);
     }
   };
 
@@ -549,7 +661,12 @@ export const AdminDashboard: React.FC = () => {
       {/* Header */}
       <header className="bg-gradient-to-r from-[#121212] via-[#141414] to-[#121212] border-b border-[#E5B549]/10 px-4 sm:px-8 py-4 flex items-center justify-between sticky top-0 z-50 shadow-lg shadow-black/20">
         <div className="flex items-center gap-3">
-          <img src="/srm-logo.png" alt="SREE RAJA RAJESWARI MOTORS" className="h-9 sm:h-10 w-auto object-contain drop-shadow-md" />
+          <img
+            src={content.logo_url || '/srm-logo.webp'}
+            onError={(e) => { e.currentTarget.src = '/srm-logo.png'; }}
+            alt="SREE RAJA RAJESWARI MOTORS"
+            className="h-9 sm:h-10 w-auto object-contain drop-shadow-md"
+          />
           <div>
             <h1 className="text-lg font-black uppercase tracking-wider text-white">
               SREE RAJA RAJESWARI MOTORS
@@ -761,11 +878,113 @@ export const AdminDashboard: React.FC = () => {
             <div>
               <h2 className="text-xl font-bold uppercase text-white tracking-wide flex items-center gap-2">
                 <FileCheck className="w-5 h-5 text-[#E5B549]" />
-                Business Information
+                Business Information & Logo
               </h2>
               <p className="text-xs text-[#D7E2EA]/60 mt-1">
-                Edit core contact details, owner name, address, and maps location link.
+                Manage your main brand logo stored in Supabase Storage and core business details.
               </p>
+            </div>
+
+            {/* Brand Logo Management Card */}
+            <div className="bg-[#1A1A1A] border border-[#E5B549]/20 rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-20 h-20 bg-black/60 border border-[#D7E2EA]/10 rounded-xl p-2 flex items-center justify-center shrink-0 overflow-hidden">
+                  <img
+                    src={content.logo_url || '/srm-logo.webp'}
+                    onError={(e) => { e.currentTarget.src = '/srm-logo.png'; }}
+                    alt="Current SRM Motors Logo"
+                    className="max-h-full max-w-full object-contain drop-shadow"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold uppercase text-white tracking-wider flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-[#E5B549]" />
+                    SRM Motors Brand Logo
+                  </h3>
+                  <p className="text-xs text-[#D7E2EA]/60 mt-1 max-w-md">
+                    Stored safely in Supabase Storage (<code className="text-[#E5B549]">website-images</code>). Fast modern WebP format with instant fallback.
+                  </p>
+                  <span className="inline-block mt-2 text-[10px] uppercase font-semibold text-[#25D366] bg-[#25D366]/10 px-2 py-0.5 rounded border border-[#25D366]/20">
+                    Supabase Storage Active
+                  </span>
+                </div>
+              </div>
+
+              <label className="cursor-pointer bg-[#E5B549] hover:bg-[#d4a438] text-black font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all flex items-center gap-2 shrink-0 shadow-lg disabled:opacity-50">
+                {uploadingLogo ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4" />
+                    Change Brand Logo
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                  disabled={uploadingLogo || saving}
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleLogoUpload(e.target.files[0]);
+                    }
+                  }}
+                />
+              </label>
+            </div>
+
+            {/* Emergency Breakdown Service Image Card */}
+            <div className="bg-[#1A1A1A] border border-red-500/20 rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-20 h-20 bg-black/60 border border-red-500/20 rounded-xl p-2 flex items-center justify-center shrink-0 overflow-hidden">
+                  <img
+                    src={content.breakdown_image_url || '/emergency-breakdown.webp'}
+                    onError={(e) => { e.currentTarget.src = '/emergency-breakdown.png'; }}
+                    alt="Emergency Breakdown Service Badge"
+                    className="max-h-full max-w-full object-contain scale-[1.2] drop-shadow"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold uppercase text-white tracking-wider flex items-center gap-2">
+                    <Wrench className="w-4 h-4 text-red-500" />
+                    Emergency Breakdown Service Badge
+                  </h3>
+                  <p className="text-xs text-[#D7E2EA]/60 mt-1 max-w-md">
+                    Displayed on the floating SOS button and emergency modal. Optimized WebP format (29 KB) for instant zero-lag rendering.
+                  </p>
+                  <span className="inline-block mt-2 text-[10px] uppercase font-semibold text-red-400 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">
+                    Supabase Storage Active
+                  </span>
+                </div>
+              </div>
+
+              <label className="cursor-pointer bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all flex items-center gap-2 shrink-0 shadow-lg disabled:opacity-50">
+                {uploadingBreakdownImg ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4" />
+                    Change Breakdown Image
+                  </>
+                )}
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                  disabled={uploadingBreakdownImg || saving}
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleBreakdownImageUpload(e.target.files[0]);
+                    }
+                  }}
+                />
+              </label>
             </div>
 
             <form onSubmit={handleSaveBusinessContent} className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1344,8 +1563,13 @@ export const AdminDashboard: React.FC = () => {
                     <option value="Tinkering">Tinkering</option>
                     <option value="Painting">Painting</option>
                     <option value="Teflon Coating">Teflon Coating</option>
+                    <option value="AC Repairs">AC Repairs</option>
+                    <option value="Insurance Claims">Insurance Claims</option>
+                    <option value="Roadside Assistance">Roadside Assistance</option>
+                    <option value="Breakdown Services">Breakdown Services</option>
                     <option value="Roadside Towing">Roadside Towing</option>
                     <option value="Spare Parts">Spare Parts</option>
+                    <option value="Electrical Work">Electrical Work</option>
                   </select>
                 </div>
 

@@ -6,6 +6,7 @@ import { SERVICE_DETAILS, type ServiceDetail } from '../data/serviceDetails';
 import { useSiteData } from '../context/SiteDataContext';
 import FooterSection from './FooterSection';
 import EmergencyBreakdownButton from './EmergencyBreakdownButton';
+import { ServiceBookingForm } from './ServiceBookingForm';
 
 interface ServicePageProps {
   slug: string;
@@ -13,8 +14,14 @@ interface ServicePageProps {
 }
 
 export const ServicePage: React.FC<ServicePageProps> = ({ slug, onNavigate }) => {
-  const { businessContent } = useSiteData();
-  const service: ServiceDetail | undefined = SERVICE_DETAILS[slug];
+  const { businessContent, galleryItems, services } = useSiteData();
+  const baseService: ServiceDetail | undefined = SERVICE_DETAILS[slug];
+
+  // Merge with Supabase image if available
+  const service = baseService ? {
+    ...baseService,
+    image: services.find(s => s.name === baseService.name)?.image || baseService.image
+  } : undefined;
 
   if (!service) {
     return (
@@ -38,6 +45,9 @@ export const ServicePage: React.FC<ServicePageProps> = ({ slug, onNavigate }) =>
   // Get other services for internal linking
   const otherServices = Object.values(SERVICE_DETAILS).filter(s => s.slug !== slug);
 
+  // Get matching gallery images for this service
+  const serviceImages = galleryItems.filter(item => item.category === service.name).slice(0, 3);
+
   return (
     <div className="min-h-screen bg-[#1c1c21] text-[#D7E2EA] flex flex-col">
       {/* Header / Navbar */}
@@ -50,7 +60,8 @@ export const ServicePage: React.FC<ServicePageProps> = ({ slug, onNavigate }) =>
             aria-label="SREE RAJA RAJESWARI MOTORS Homepage"
           >
             <img 
-              src="/srm-logo.png" 
+              src={businessContent.logo_url || '/srm-logo.webp'}
+              onError={(e) => { e.currentTarget.src = '/srm-logo.png'; }}
               width="180" 
               height="48" 
               alt="SREE RAJA RAJESWARI MOTORS Logo - Car Service Center in Tirupati" 
@@ -107,9 +118,19 @@ export const ServicePage: React.FC<ServicePageProps> = ({ slug, onNavigate }) =>
 
             {/* Title & Tagline Column */}
             <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-center">
-              <div className="inline-flex items-center gap-2 text-brand text-xs uppercase tracking-widest font-semibold mb-3">
-                <Wrench className="w-4 h-4" /> SRM • Tirupati
-              </div>
+              <nav aria-label="Breadcrumb" className="mb-4">
+                <ol className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest font-semibold text-white/60">
+                  <li>
+                    <a href="/" onClick={(e) => { e.preventDefault(); onNavigate('/'); }} className="hover:text-brand transition-colors flex items-center gap-1">Home</a>
+                  </li>
+                  <li className="text-white/30">/</li>
+                  <li>
+                    <a href="/#services" onClick={(e) => { e.preventDefault(); onNavigate('/#services'); }} className="hover:text-brand transition-colors">Services</a>
+                  </li>
+                  <li className="text-white/30">/</li>
+                  <li className="text-brand" aria-current="page">{service.name}</li>
+                </ol>
+              </nav>
               <h1 className="hero-heading font-black text-2xl sm:text-4xl md:text-5xl uppercase tracking-tight text-white leading-tight mb-4">
                 {service.h1}
               </h1>
@@ -119,6 +140,14 @@ export const ServicePage: React.FC<ServicePageProps> = ({ slug, onNavigate }) =>
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-3">
+                <button 
+                  onClick={() => {
+                    document.getElementById('booking-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }}
+                  className="bg-brand text-black font-bold uppercase tracking-wider text-xs sm:text-sm px-6 py-3 rounded-full hover:bg-brand-light transition-all flex items-center gap-2 shadow-lg"
+                >
+                  <CheckCircle2 className="w-4 h-4" /> Book This Service
+                </button>
                 <a 
                   href={phoneHref} 
                   className="bg-brand text-black font-semibold uppercase tracking-wider text-xs sm:text-sm px-6 py-3 rounded-full hover:bg-brand-light transition-all flex items-center gap-2 shadow-lg"
@@ -169,8 +198,12 @@ export const ServicePage: React.FC<ServicePageProps> = ({ slug, onNavigate }) =>
             </div>
           </div>
 
-          {/* Key Features & Service Checklist Sidebar */}
+          {/* Key Features & Booking Sidebar */}
           <div className="flex flex-col gap-6">
+            
+            {/* WhatsApp Booking Form */}
+            <ServiceBookingForm serviceName={service.name} />
+
             <div className="bg-surface border border-border rounded-2xl p-6 sm:p-8">
               <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-6 pb-3 border-b border-white/10">
                 Service Highlights
@@ -202,6 +235,33 @@ export const ServicePage: React.FC<ServicePageProps> = ({ slug, onNavigate }) =>
             </div>
           </div>
         </div>
+
+        {/* Service Gallery Section */}
+        {serviceImages.length > 0 && (
+          <section className="mb-16">
+            <h2 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wider mb-8 flex items-center gap-3 border-b border-white/10 pb-3">
+              <Wrench className="w-5 h-5 text-brand" /> {service.name} Gallery
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {serviceImages.map((img) => (
+                <div key={img.id} className="relative aspect-square rounded-2xl overflow-hidden group border border-white/10 shadow-lg">
+                  <img 
+                    src={img.imageUrl} 
+                    alt={`${service.name} - ${img.caption || 'Work'} at SREE RAJA RAJESWARI MOTORS`}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform">
+                    <h4 className="text-white font-bold tracking-wide uppercase text-sm mb-1">{img.caption}</h4>
+                    {img.subtitle && <p className="text-brand text-xs">{img.subtitle}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Related Services Navigation Section */}
         <section className="pt-10 border-t border-white/10">

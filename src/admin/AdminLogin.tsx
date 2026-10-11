@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useSiteData } from '../context/SiteDataContext';
 import { Lock, Mail, ShieldAlert, Loader2 } from 'lucide-react';
 
 export const AdminLogin: React.FC = () => {
   const { signIn } = useAuth();
+  const { businessContent } = useSiteData();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,9 +37,14 @@ export const AdminLogin: React.FC = () => {
     <div className="min-h-screen bg-[#0C0C0C] text-[#D7E2EA] flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-[#121212] border border-[#E5B549]/20 rounded-2xl p-8 shadow-2xl shadow-[#E5B549]/5">
         <div className="flex flex-col items-center text-center mb-8">
-          <img src="/srm-logo.png" alt="SREE RAJA RAJESWARI MOTORS" className="h-16 sm:h-20 w-auto object-contain mb-4 drop-shadow-2xl" />
+          <img
+            src={businessContent.logo_url || '/srm-logo.webp'}
+            onError={(e) => { e.currentTarget.src = '/srm-logo.png'; }}
+            alt={businessContent.business_name || "SREE RAJA RAJESWARI MOTORS"}
+            className="h-16 sm:h-20 w-auto object-contain mb-4 drop-shadow-2xl"
+          />
           <h1 className="text-2xl font-black uppercase tracking-wider text-white">
-            SREE RAJA RAJESWARI MOTORS
+            {businessContent.business_name || "SREE RAJA RAJESWARI MOTORS"}
           </h1>
           <p className="text-xs uppercase tracking-widest text-[#D7E2EA]/60 mt-1">
             Admin Portal Sign In

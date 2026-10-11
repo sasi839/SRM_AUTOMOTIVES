@@ -21,7 +21,12 @@ const FooterSection = () => {
         {/* Contact Info */}
         <div className="flex-1 flex flex-col gap-8">
           <FadeIn delay={0} y={30} className="flex items-center gap-3 sm:gap-4 mb-6">
-            <img src="/srm-logo.png" alt="SREE RAJA RAJESWARI MOTORS Logo - Autonagar Tirupati" className="h-12 sm:h-14 md:h-16 w-auto object-contain drop-shadow-xl" />
+            <img
+              src={businessContent.logo_url || '/srm-logo.webp'}
+              onError={(e) => { e.currentTarget.src = '/srm-logo.png'; }}
+              alt="SREE RAJA RAJESWARI MOTORS Logo - Autonagar Tirupati"
+              className="h-12 sm:h-14 md:h-16 w-auto object-contain drop-shadow-xl"
+            />
             <h2 className="font-black uppercase text-3xl sm:text-4xl md:text-5xl tracking-tight leading-none text-white">
               Contact Us
             </h2>

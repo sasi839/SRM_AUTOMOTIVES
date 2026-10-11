@@ -9,13 +9,14 @@ import FooterSection from './components/FooterSection';
 import EmergencyBreakdownButton from './components/EmergencyBreakdownButton';
 import ServicePage from './components/ServicePage';
 import AdminPage from './admin/AdminPage';
-import { SiteDataProvider } from './context/SiteDataContext';
+import { useSiteData } from './context/SiteDataContext';
 import { SERVICE_DETAILS } from './data/serviceDetails';
 
 function App() {
   const [currentPath, setCurrentPath] = useState<string>(
     window.location.pathname + window.location.hash
   );
+  const { businessContent } = useSiteData();
 
   useEffect(() => {
     const handlePopState = () => {
@@ -113,13 +114,14 @@ function App() {
         "serviceType": currentService.h1,
         "provider": {
           "@type": "AutoRepair",
-          "name": "Sree Raja Rajeswari Motors",
+          "name": businessContent.business_name,
           "alternateName": "SRM Motors",
           "url": "https://sreerajarajeswarimotors.com/",
-          "logo": "https://sreerajarajeswarimotors.com/srm-logo.png",
-          "image": "https://sreerajarajeswarimotors.com/srm-logo.png",
-          "telephone": "+91 8919594039",
-          "email": "Lokesh.lvrn@gmail.com",
+          "logo": "https://sreerajarajeswarimotors.com" + (businessContent.logo_url || '/srm-logo.webp'),
+          "image": "https://sreerajarajeswarimotors.com" + (businessContent.logo_url || '/srm-logo.webp'),
+          "telephone": businessContent.primary_phone,
+          "email": businessContent.email || "Lokesh.lvrn@gmail.com",
+          "hasMap": businessContent.google_maps_url,
           "address": {
             "@type": "PostalAddress",
             "streetAddress": "#184, Renigunta Road, S.V. Autonagar",
@@ -173,13 +175,14 @@ function App() {
           {
             "@type": "AutoRepair",
             "@id": "https://sreerajarajeswarimotors.com/#organization",
-            "name": "Sree Raja Rajeswari Motors",
+            "name": businessContent.business_name || "Sree Raja Rajeswari Motors",
             "alternateName": "SRM Motors",
             "url": "https://sreerajarajeswarimotors.com/",
-            "logo": "https://sreerajarajeswarimotors.com/srm-logo.png",
-            "image": "https://sreerajarajeswarimotors.com/srm-logo.png",
-            "telephone": "+91 8919594039",
-            "email": "Lokesh.lvrn@gmail.com",
+            "logo": "https://sreerajarajeswarimotors.com" + (businessContent.logo_url || '/srm-logo.webp'),
+            "image": "https://sreerajarajeswarimotors.com" + (businessContent.logo_url || '/srm-logo.webp'),
+            "telephone": businessContent.primary_phone || "+91 8919594039",
+            "email": businessContent.email || "Lokesh.lvrn@gmail.com",
+            "hasMap": businessContent.google_maps_url,
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "#184, Renigunta Road, S.V. Autonagar",
@@ -211,26 +214,20 @@ function App() {
   }
 
   if (isServiceRoute && serviceSlug) {
-    return (
-      <SiteDataProvider>
-        <ServicePage slug={serviceSlug} onNavigate={handleNavigate} />
-      </SiteDataProvider>
-    );
+    return <ServicePage slug={serviceSlug} onNavigate={handleNavigate} />;
   }
 
   return (
-    <SiteDataProvider>
-      <main className="main-wrapper overflow-x-clip min-h-screen">
-        <HeroSection />
-        <ServicesSection onNavigate={handleNavigate} />
-        <ProjectsSection />
-        <MarqueeSection />
-        <WhyUsSection />
-        <AboutSection />
-        <FooterSection />
-        <EmergencyBreakdownButton />
-      </main>
-    </SiteDataProvider>
+    <main className="main-wrapper overflow-x-clip min-h-screen">
+      <HeroSection />
+      <ServicesSection onNavigate={handleNavigate} />
+      <ProjectsSection />
+      <MarqueeSection />
+      <WhyUsSection />
+      <AboutSection />
+      <FooterSection />
+      <EmergencyBreakdownButton />
+    </main>
   );
 }
 
