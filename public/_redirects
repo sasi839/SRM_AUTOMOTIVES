@@ -1,0 +1,6 @@
+# Cloudflare Pages SPA Fallback
+# Static files (XML, txt, images, etc.) are served directly before this rule applies.
+/admin  /index.html  200
+/billing  /index.html  200
+/services/*  /index.html  200
+/*  /index.html  200
