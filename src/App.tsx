@@ -54,9 +54,14 @@ function App() {
   const pathname = window.location.pathname;
   const hash = window.location.hash;
 
-  const isAdminRoute = pathname === '/admin' || hash === '#admin' || pathname === '/billing' || hash === '#billing';
-  const isServiceRoute = pathname.startsWith('/services/');
-  const serviceSlug = isServiceRoute ? pathname.replace('/services/', '').replace(/\/$/, '') : '';
+  const normalizedPath = pathname.replace(/\/+$/, '') || '/';
+  const isAdminRoute =
+    normalizedPath === '/admin' ||
+    normalizedPath === '/billing' ||
+    hash === '#admin' ||
+    hash === '#billing';
+  const isServiceRoute = normalizedPath.startsWith('/services/');
+  const serviceSlug = isServiceRoute ? normalizedPath.replace('/services/', '').replace(/\/$/, '') : '';
   const currentService = SERVICE_DETAILS[serviceSlug];
 
   useEffect(() => {
