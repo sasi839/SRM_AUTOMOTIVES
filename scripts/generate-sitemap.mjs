@@ -1,7 +1,23 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SERVICE_DETAILS } from '../src/data/serviceDetails.ts';
+
+function loadServiceDetails(projectRoot) {
+  const filePath = path.join(projectRoot, 'src', 'data', 'serviceDetails.ts');
+  const content = fs.readFileSync(filePath, 'utf8');
+  const slugRegex = /'([a-z0-9-]+)':\s*\{[\s\S]*?slug:\s*'([^']+)'[\s\S]*?title:\s*'([^']+)'[\s\S]*?metaDescription:\s*'([^']+)'[\s\S]*?image:\s*'([^']+)'/g;
+  const services = [];
+  let match;
+  while ((match = slugRegex.exec(content)) !== null) {
+    services.push({
+      slug: match[2],
+      title: match[3],
+      metaDescription: match[4],
+      image: match[5]
+    });
+  }
+  return services;
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -63,8 +79,8 @@ function generatePagesSitemap() {
 }
 
 // 3. Generate Services Sitemap (public/sitemap-services.xml)
-function generateServicesSitemap() {
-  const serviceEntries = Object.values(SERVICE_DETAILS).map((service) => {
+function generateServicesSitemap(services) {
+  const serviceEntries = services.map((service) => {
     const loc = `${BASE_URL}/services/${service.slug}`;
     const title = escapeXml(service.title || service.name);
     const caption = escapeXml(service.metaDescription || service.tagline);
@@ -162,8 +178,9 @@ function main() {
   fs.writeFileSync(sitemapPagesPath, generatePagesSitemap(), 'utf8');
   console.log(`[SEO] Generated: ${sitemapPagesPath}`);
 
-  fs.writeFileSync(sitemapServicesPath, generateServicesSitemap(), 'utf8');
-  console.log(`[SEO] Generated: ${sitemapServicesPath} (${Object.keys(SERVICE_DETAILS).length} services)`);
+  const services = loadServiceDetails(projectRoot);
+  fs.writeFileSync(sitemapServicesPath, generateServicesSitemap(services), 'utf8');
+  console.log(`[SEO] Generated: ${sitemapServicesPath} (${services.length} services)`);
 
   fs.writeFileSync(robotsTxtPath, generateRobotsTxt(), 'utf8');
   console.log(`[SEO] Generated: ${robotsTxtPath}`);

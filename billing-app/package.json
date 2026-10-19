@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --port 5175",
     "build": "tsc -b && vite build",
+    "postbuild": "node -e \"import('node:fs').then(fs => fs.copyFileSync('dist/index.html', 'dist/200.html'))\"",
     "preview": "vite preview"
   },
   "dependencies": {
