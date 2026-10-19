@@ -5,7 +5,8 @@ import {
   Search, 
   Printer, 
   BookOpen,
-  ChevronRight
+  ChevronRight,
+  FileEdit
 } from 'lucide-react';
 import type { BillingModuleTab } from '../../types/billing';
 
@@ -38,6 +39,12 @@ export const NAV_ITEMS = [
     label: 'Print Bill & Statement',
     icon: Printer,
     description: 'Generate statements (Till Now / Date Ranges)',
+  },
+  {
+    id: 'modify_bill' as BillingModuleTab,
+    label: 'Modify Bill',
+    icon: FileEdit,
+    description: 'Edit existing bills & values (PIN protected)',
   },
   {
     id: 'works_catalogue' as BillingModuleTab,

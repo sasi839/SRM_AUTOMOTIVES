@@ -7,18 +7,13 @@ import {
   CalendarRange, 
   CalendarDays, 
   FileSpreadsheet, 
-  Search, 
   RefreshCw, 
-  Hash, 
   FileText, 
-  ShieldCheck, 
-  ChevronRight,
-  Layers,
   Download,
   Share2,
   Wrench
 } from 'lucide-react';
-import { Invoice, PrintSearchMode, PrintSearchFilter } from '../../../types/billing';
+import type { Invoice, PrintSearchMode, PrintSearchFilter } from '../../../types/billing';
 import { BillingService } from '../../../services/billingService';
 import { PdfService } from '../../../services/pdfService';
 import { NumberPlateInput } from '../../common/NumberPlateInput';
@@ -76,6 +71,11 @@ export const PrintBillModule: React.FC = () => {
 
   // Grand Total of all separate billing events in the statement
   const statementGrandTotal = statementInvoices.reduce((sum, inv) => sum + (inv.grand_total || 0), 0);
+  const totalLabourDiscountAcrossStatement = statementInvoices.reduce((sum, inv) => sum + (inv.labour_discount_amount || 0), 0);
+  const totalOriginalBeforeDiscount = statementInvoices.reduce((sum, inv) => {
+    const sub = inv.subtotal_before_discount || (inv.items || []).reduce((s, it) => s + (it.amount || 0), 0);
+    return sum + sub;
+  }, 0);
 
   return (
     <div className="space-y-6">
@@ -344,6 +344,12 @@ export const PrintBillModule: React.FC = () => {
                         Event Total: ₹{invoice.grand_total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </span>
 
+                      {invoice.labour_discount_percentage && invoice.labour_discount_percentage > 0 && (
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800/60 font-bold text-[10px]">
+                          🎉 Labour Discount: {invoice.labour_discount_percentage}% OFF (-₹{(invoice.labour_discount_amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })})
+                        </span>
+                      )}
+
                       {/* Single Invoice Actions for this specific event */}
                       <div className="flex items-center gap-1.5 pl-2 border-l border-slate-800">
                         <button
@@ -419,13 +425,28 @@ export const PrintBillModule: React.FC = () => {
                   <p className="text-xs text-slate-400">
                     Calculated sum of all {statementInvoices.length} separate billing events for <span className="font-mono text-red-400">{activeFilter.number_plate}</span>
                   </p>
+                  {totalLabourDiscountAcrossStatement > 0 && (
+                    <div className="mt-2">
+                      <span className="px-3 py-1 bg-emerald-950/80 border border-emerald-700/60 rounded-lg text-emerald-300 font-extrabold text-xs inline-flex items-center gap-1.5 shadow-sm">
+                        🎉 Total Labour Savings: ₹{totalLabourDiscountAcrossStatement.toLocaleString('en-IN', { minimumFractionDigits: 2 })} (Applied across discounted events)
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="text-right">
+                  {totalLabourDiscountAcrossStatement > 0 && (
+                    <span className="text-xs text-slate-500 line-through font-mono block">
+                      Original: ₹ {totalOriginalBeforeDiscount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                  )}
                   <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Statement Grand Total</span>
                   <span className="text-2xl font-mono font-black text-emerald-400">
                     ₹ {statementGrandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
+                  {totalLabourDiscountAcrossStatement > 0 && (
+                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">Net Payable</span>
+                  )}
                 </div>
               </div>
 

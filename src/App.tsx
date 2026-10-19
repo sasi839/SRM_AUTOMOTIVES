@@ -65,6 +65,12 @@ function App() {
   const currentService = SERVICE_DETAILS[serviceSlug];
 
   useEffect(() => {
+    if (normalizedPath === '/services') {
+      handleNavigate('/#services');
+    }
+  }, [normalizedPath]);
+
+  useEffect(() => {
     let robotsMeta = document.querySelector('meta[name="robots"]');
     let canonicalLink = document.querySelector('link[rel="canonical"]');
     let ogTitleMeta = document.querySelector('meta[property="og:title"]');
@@ -91,9 +97,14 @@ function App() {
       robotsMeta.setAttribute('content', 'noindex, nofollow');
       document.title = 'Admin Login | SREE RAJA RAJESWARI MOTORS';
       if (jsonLdScript) jsonLdScript.remove();
+    } else if (isServiceRoute && !currentService) {
+      // Invalid service route: 404, noindex, nofollow to prevent soft 404s
+      robotsMeta.setAttribute('content', 'noindex, nofollow');
+      document.title = '404 - Service Not Found | SREE RAJA RAJESWARI MOTORS';
+      if (jsonLdScript) jsonLdScript.remove();
     } else if (isServiceRoute && currentService) {
-      // Service Detail route: index, follow, service metadata & JSON-LD
-      robotsMeta.setAttribute('content', 'index, follow');
+      // Service Detail route: index, follow, service metadata, BreadcrumbList & JSON-LD
+      robotsMeta.setAttribute('content', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
       document.title = currentService.title;
       
       const prodUrl = `https://sreerajarajeswarimotors.com/services/${currentService.slug}`;
@@ -114,37 +125,80 @@ function App() {
       }
       jsonLdScript.textContent = JSON.stringify({
         "@context": "https://schema.org",
-        "@type": "Service",
-        "name": currentService.name,
-        "serviceType": currentService.h1,
-        "provider": {
-          "@type": "AutoRepair",
-          "name": businessContent.business_name,
-          "alternateName": "SRM Motors",
-          "url": "https://sreerajarajeswarimotors.com/",
-          "logo": "https://sreerajarajeswarimotors.com" + (businessContent.logo_url || '/srm-logo.webp'),
-          "image": "https://sreerajarajeswarimotors.com" + (businessContent.logo_url || '/srm-logo.webp'),
-          "telephone": businessContent.primary_phone,
-          "email": businessContent.email || "Lokesh.lvrn@gmail.com",
-          "hasMap": businessContent.google_maps_url,
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "#184, Renigunta Road, S.V. Autonagar",
-            "addressLocality": "Tirupati",
-            "addressRegion": "Andhra Pradesh",
-            "addressCountry": "IN"
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "@id": `${prodUrl}#breadcrumb`,
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://sreerajarajeswarimotors.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Services",
+                "item": "https://sreerajarajeswarimotors.com/#services"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": currentService.name,
+                "item": prodUrl
+              }
+            ]
+          },
+          {
+            "@type": "Service",
+            "@id": `${prodUrl}#service`,
+            "name": currentService.name,
+            "serviceType": currentService.h1,
+            "provider": {
+              "@type": "AutoRepair",
+              "@id": "https://sreerajarajeswarimotors.com/#organization",
+              "name": businessContent.business_name || "SREE RAJA RAJESWARI MOTORS",
+              "alternateName": "SRM Motors",
+              "url": "https://sreerajarajeswarimotors.com/",
+              "logo": "https://sreerajarajeswarimotors.com" + (businessContent.logo_url || '/srm-logo.webp'),
+              "image": "https://sreerajarajeswarimotors.com" + (businessContent.logo_url || '/srm-logo.webp'),
+              "telephone": businessContent.primary_phone || "+91 8919594039",
+              "email": businessContent.email || "Lokesh.lvrn@gmail.com",
+              "hasMap": businessContent.google_maps_url || "https://maps.app.goo.gl/dnHpFsgdPKao7ALk7",
+              "priceRange": "₹₹",
+              "currenciesAccepted": "INR",
+              "paymentAccepted": "Cash, UPI, Credit Card, Debit Card",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "#184, Renigunta Road, S.V. Autonagar",
+                "addressLocality": "Tirupati",
+                "addressRegion": "Andhra Pradesh",
+                "postalCode": "517506",
+                "addressCountry": "IN"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 13.6288,
+                "longitude": 79.4452
+              }
+            },
+            "areaServed": [
+              { "@type": "City", "name": "Tirupati" },
+              { "@type": "AdministrativeArea", "name": "Renigunta" },
+              { "@type": "AdministrativeArea", "name": "Chandragiri" },
+              { "@type": "AdministrativeArea", "name": "Tirumala" },
+              { "@type": "AdministrativeArea", "name": "Chittoor District" }
+            ],
+            "description": currentService.metaDescription,
+            "image": currentService.image
           }
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Tirupati"
-        },
-        "description": currentService.metaDescription
+        ]
       });
 
     } else {
       // Homepage: index, follow, WebSite & AutoRepair JSON-LD
-      robotsMeta.setAttribute('content', 'index, follow');
+      robotsMeta.setAttribute('content', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
       document.title = 'SREE RAJA RAJESWARI MOTORS | Car Service, Repairs & Teflon Coating in Tirupati';
       
       const prodUrl = 'https://sreerajarajeswarimotors.com/';
@@ -171,7 +225,7 @@ function App() {
             "@type": "WebSite",
             "@id": "https://sreerajarajeswarimotors.com/#website",
             "url": "https://sreerajarajeswarimotors.com/",
-            "name": "Sree Raja Rajeswari Motors",
+            "name": "SREE RAJA RAJESWARI MOTORS",
             "alternateName": ["SRM Motors", "Sree Raja Rajeswari Motors Tirupati"],
             "publisher": {
               "@id": "https://sreerajarajeswarimotors.com/#organization"
@@ -180,14 +234,17 @@ function App() {
           {
             "@type": "AutoRepair",
             "@id": "https://sreerajarajeswarimotors.com/#organization",
-            "name": businessContent.business_name || "Sree Raja Rajeswari Motors",
+            "name": businessContent.business_name || "SREE RAJA RAJESWARI MOTORS",
             "alternateName": "SRM Motors",
             "url": "https://sreerajarajeswarimotors.com/",
             "logo": "https://sreerajarajeswarimotors.com" + (businessContent.logo_url || '/srm-logo.webp'),
             "image": "https://sreerajarajeswarimotors.com" + (businessContent.logo_url || '/srm-logo.webp'),
             "telephone": businessContent.primary_phone || "+91 8919594039",
             "email": businessContent.email || "Lokesh.lvrn@gmail.com",
-            "hasMap": businessContent.google_maps_url,
+            "hasMap": businessContent.google_maps_url || "https://maps.app.goo.gl/dnHpFsgdPKao7ALk7",
+            "priceRange": "₹₹",
+            "currenciesAccepted": "INR",
+            "paymentAccepted": "Cash, UPI, Credit Card, Debit Card",
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "#184, Renigunta Road, S.V. Autonagar",
@@ -196,6 +253,32 @@ function App() {
               "postalCode": "517506",
               "addressCountry": "IN"
             },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 13.6288,
+              "longitude": 79.4452
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                "opens": "09:00",
+                "closes": "21:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Sunday",
+                "opens": "09:00",
+                "closes": "14:00"
+              }
+            ],
+            "areaServed": [
+              { "@type": "City", "name": "Tirupati" },
+              { "@type": "AdministrativeArea", "name": "Renigunta" },
+              { "@type": "AdministrativeArea", "name": "Chandragiri" },
+              { "@type": "AdministrativeArea", "name": "Tirumala" },
+              { "@type": "AdministrativeArea", "name": "Chittoor District" }
+            ],
             "hasOfferCatalog": {
               "@type": "OfferCatalog",
               "name": "Automotive Services",
@@ -204,7 +287,8 @@ function App() {
                 "itemOffered": {
                   "@type": "Service",
                   "name": s.name,
-                  "description": s.metaDescription
+                  "description": s.metaDescription,
+                  "url": `https://sreerajarajeswarimotors.com/services/${s.slug}`
                 }
               }))
             }
@@ -212,7 +296,7 @@ function App() {
         ]
       });
     }
-  }, [currentPath, isAdminRoute, isServiceRoute, currentService]);
+  }, [currentPath, isAdminRoute, isServiceRoute, currentService, businessContent]);
 
   if (isAdminRoute) {
     return <AdminPage />;

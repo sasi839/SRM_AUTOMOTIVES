@@ -9,6 +9,7 @@ import { CreateBillModule } from './components/modules/create-bill/CreateBillMod
 import { SearchBillModule } from './components/modules/search-bill/SearchBillModule';
 import { PrintBillModule } from './components/modules/print-bill/PrintBillModule';
 import { WorksCatalogueModule } from './components/modules/works-catalogue/WorksCatalogueModule';
+import { ModifyBillModule } from './components/modules/modify-bill/ModifyBillModule';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<BillingModuleTab>('dashboard');
@@ -52,6 +53,10 @@ export function App() {
 
           {activeTab === 'print_bill' && (
             <PrintBillModule />
+          )}
+
+          {activeTab === 'modify_bill' && (
+            <ModifyBillModule />
           )}
 
           {activeTab === 'works_catalogue' && (

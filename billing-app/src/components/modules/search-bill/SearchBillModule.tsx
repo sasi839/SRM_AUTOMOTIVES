@@ -12,12 +12,9 @@ import {
   X, 
   ShieldCheck,
   Hash,
-  Wrench,
-  Sparkles,
-  RefreshCw,
-  CheckCircle2
+  RefreshCw
 } from 'lucide-react';
-import { Invoice } from '../../../types/billing';
+import type { Invoice } from '../../../types/billing';
 import { BillingService } from '../../../services/billingService';
 import { PdfService } from '../../../services/pdfService';
 import { NumberPlateInput } from '../../common/NumberPlateInput';
@@ -246,7 +243,11 @@ export const SearchBillModule: React.FC = () => {
             </div>
 
             {/* Invoice Meta Grid */}
-            <div className="grid grid-cols-3 gap-3 text-xs bg-slate-950 p-3 rounded-xl border border-slate-800">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <div>
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Name</span>
+                <span className="font-bold text-white truncate block">{selectedInvoice.customer_name || 'N/A'}</span>
+              </div>
               <div>
                 <span className="text-[10px] text-slate-500 uppercase font-bold block">Number Plate</span>
                 <span className="font-mono font-bold text-red-400">{selectedInvoice.number_plate}</span>
@@ -254,6 +255,10 @@ export const SearchBillModule: React.FC = () => {
               <div>
                 <span className="text-[10px] text-slate-500 uppercase font-bold block">Mobile Number</span>
                 <span className="font-mono text-slate-300">{selectedInvoice.mobile_number || 'N/A'}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Odometer</span>
+                <span className="font-mono text-slate-300">{selectedInvoice.odometer ? `${selectedInvoice.odometer} km` : 'N/A'}</span>
               </div>
               <div>
                 <span className="text-[10px] text-slate-500 uppercase font-bold block">Invoice Date</span>
@@ -302,11 +307,26 @@ export const SearchBillModule: React.FC = () => {
             </div>
 
             {/* Total Footer */}
-            <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between text-xs font-bold">
-              <span className="text-slate-400">Grand Total Invoice Amount:</span>
-              <span className="font-mono text-emerald-400 text-base">
-                ₹ {selectedInvoice.grand_total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </span>
+            <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+              {Boolean(selectedInvoice.labour_discount_percentage && selectedInvoice.labour_discount_percentage > 0) && (
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-slate-800/80 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-400">Total Before Discount:</span>
+                    <span className="font-mono text-slate-400 line-through">
+                      ₹{(selectedInvoice.subtotal_before_discount ?? (selectedInvoice.grand_total + (selectedInvoice.labour_discount_amount || 0))).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 w-fit">
+                    🎉 Labour Discount ({selectedInvoice.labour_discount_percentage}% OFF): -₹{(selectedInvoice.labour_discount_amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                  </span>
+                </div>
+              )}
+              <div className="flex items-center justify-between text-xs font-bold">
+                <span className="text-slate-400">Grand Total Invoice Amount:</span>
+                <span className="font-mono text-emerald-400 text-base">
+                  ₹ {selectedInvoice.grand_total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
+              </div>
             </div>
 
             <div className="text-right">

@@ -1,16 +1,21 @@
 # Cloudflare Pages custom headers
-# Serve XML sitemaps with correct content-type
+# Serve XML sitemaps with correct content-type and cache control
 /sitemap.xml
   Content-Type: application/xml; charset=utf-8
   X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=86400, stale-while-revalidate=43200
 
 /sitemap-pages.xml
   Content-Type: application/xml; charset=utf-8
   X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=86400, stale-while-revalidate=43200
 
 /sitemap-services.xml
   Content-Type: application/xml; charset=utf-8
   X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=86400, stale-while-revalidate=43200
 
 /robots.txt
   Content-Type: text/plain; charset=utf-8
+  X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=86400, stale-while-revalidate=43200

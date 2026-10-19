@@ -9,6 +9,7 @@ import { CreateBillModule } from './components/modules/create-bill/CreateBillMod
 import { SearchBillModule } from './components/modules/search-bill/SearchBillModule';
 import { PrintBillModule } from './components/modules/print-bill/PrintBillModule';
 import { WorksCatalogueModule } from './components/modules/works-catalogue/WorksCatalogueModule';
+import { ModifyBillModule } from './components/modules/modify-bill/ModifyBillModule';
 
 async function checkBillingDbConnection() {
   try {
@@ -61,6 +62,7 @@ export const BillingModule: React.FC = () => {
           {activeTab === 'create_bill' && <CreateBillModule />}
           {activeTab === 'search_bill' && <SearchBillModule />}
           {activeTab === 'print_bill' && <PrintBillModule />}
+          {activeTab === 'modify_bill' && <ModifyBillModule />}
           {activeTab === 'works_catalogue' && <WorksCatalogueModule />}
         </main>
       </div>

@@ -1,8 +1,49 @@
 # SREE RAJA RAJESWARI MOTORS - robots.txt
-# Controls search engine crawler indexing
+# Controls search engine crawler indexing and discovery for https://sreerajarajeswarimotors.com
 
 User-agent: *
 Allow: /
+Allow: /services/
 Disallow: /admin
+Disallow: /admin/
+Disallow: /billing
+Disallow: /billing/
 
+# Crawl Delay
+Crawl-delay: 1
+
+# Master Sitemap Index
 Sitemap: https://sreerajarajeswarimotors.com/sitemap.xml
+
+# Direct Sub-Sitemaps for Fast Indexing
+Sitemap: https://sreerajarajeswarimotors.com/sitemap-pages.xml
+Sitemap: https://sreerajarajeswarimotors.com/sitemap-services.xml
+
+# Googlebot specific rules
+User-agent: Googlebot
+Allow: /
+Allow: /services/
+Disallow: /admin
+Disallow: /admin/
+Disallow: /billing
+Disallow: /billing/
+
+# Googlebot-Image specific rules
+User-agent: Googlebot-Image
+Allow: /
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.webp$
+Allow: /*.svg$
+
+# Bingbot specific rules
+User-agent: Bingbot
+Allow: /
+Allow: /services/
+Disallow: /admin
+Disallow: /admin/
+Disallow: /billing
+Disallow: /billing/
+
+Host: https://sreerajarajeswarimotors.com

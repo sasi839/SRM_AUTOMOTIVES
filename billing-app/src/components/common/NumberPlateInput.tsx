@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Car, ChevronDown, Check } from 'lucide-react';
+import { Car, Check } from 'lucide-react';
 import { BillingService } from '../../services/billingService';
+import type { VehicleSuggestion } from '../../types/billing';
 
 interface NumberPlateInputProps {
   value: string;
   onChange: (value: string) => void;
-  onSelectSuggestion?: (plate: string) => void;
+  onSelectSuggestion?: (plate: string, suggestion?: VehicleSuggestion) => void;
   placeholder?: string;
   disabled?: boolean;
   required?: boolean;
@@ -21,32 +22,38 @@ export const NumberPlateInput: React.FC<NumberPlateInputProps> = ({
   required = false,
   className = '',
 }) => {
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<VehicleSuggestion[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Fetch suggestions helper
+  const loadSuggestions = async (val: string) => {
+    setLoading(true);
+    const results = await BillingService.getStoredVehicles(val);
+    setSuggestions(results);
+    setIsOpen(results.length > 0);
+    setLoading(false);
+  };
+
   // Fetch suggestions as value changes
   useEffect(() => {
-    const cleanVal = value.trim().toUpperCase();
-    if (!cleanVal || cleanVal.length < 1) {
-      setSuggestions([]);
-      setIsOpen(false);
-      return;
-    }
-
     let isMounted = true;
+    const cleanVal = value.trim().toUpperCase();
+
     const fetchSuggestions = async () => {
       setLoading(true);
-      const results = await BillingService.getDistinctNumberPlates(cleanVal);
+      const results = await BillingService.getStoredVehicles(cleanVal);
       if (isMounted) {
         setSuggestions(results);
-        setIsOpen(results.length > 0);
+        if (cleanVal.length > 0) {
+          setIsOpen(results.length > 0);
+        }
         setLoading(false);
       }
     };
 
-    const timer = setTimeout(fetchSuggestions, 150);
+    const timer = setTimeout(fetchSuggestions, 100);
     return () => {
       isMounted = false;
       clearTimeout(timer);
@@ -64,10 +71,10 @@ export const NumberPlateInput: React.FC<NumberPlateInputProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSelect = (plate: string) => {
+  const handleSelect = (plate: string, suggestion?: VehicleSuggestion) => {
     onChange(plate);
     if (onSelectSuggestion) {
-      onSelectSuggestion(plate);
+      onSelectSuggestion(plate, suggestion);
     }
     setIsOpen(false);
   };
@@ -80,9 +87,7 @@ export const NumberPlateInput: React.FC<NumberPlateInputProps> = ({
           type="text" 
           value={value}
           onChange={(e) => onChange(e.target.value.toUpperCase())}
-          onFocus={() => {
-            if (suggestions.length > 0) setIsOpen(true);
-          }}
+          onFocus={() => loadSuggestions(value.trim().toUpperCase())}
           placeholder={placeholder}
           disabled={disabled}
           required={required}
@@ -102,20 +107,32 @@ export const NumberPlateInput: React.FC<NumberPlateInputProps> = ({
           </div>
 
           <div className="divide-y divide-slate-800/60">
-            {suggestions.map((plate) => (
+            {suggestions.map((item) => (
               <button
-                key={plate}
+                key={item.number_plate}
                 type="button"
-                onClick={() => handleSelect(plate)}
+                onClick={() => handleSelect(item.number_plate, item)}
                 className="w-full text-left px-3.5 py-2.5 hover:bg-red-950/40 hover:text-white text-slate-200 text-xs font-mono font-bold flex items-center justify-between transition-colors group cursor-pointer"
               >
                 <div className="flex items-center gap-2">
-                  <Car className="w-3.5 h-3.5 text-slate-500 group-hover:text-red-400 transition-colors" />
-                  <span className="tracking-wider">{plate}</span>
+                  <Car className="w-3.5 h-3.5 text-slate-500 group-hover:text-red-400 transition-colors shrink-0" />
+                  <span className="tracking-wider">{item.number_plate}</span>
                 </div>
-                {value.trim().toUpperCase() === plate && (
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                )}
+                <div className="flex items-center gap-2 font-sans font-normal text-[11px] ml-2">
+                  {item.customer_name && (
+                    <span className="text-slate-300 group-hover:text-white font-medium truncate max-w-[140px]">
+                      {item.customer_name}
+                    </span>
+                  )}
+                  {item.mobile_number && (
+                    <span className="text-slate-500 font-mono text-[10px] hidden sm:inline">
+                      {item.mobile_number}
+                    </span>
+                  )}
+                  {value.trim().toUpperCase() === item.number_plate && (
+                    <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-1" />
+                  )}
+                </div>
               </button>
             ))}
           </div>

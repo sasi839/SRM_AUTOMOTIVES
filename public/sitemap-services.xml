@@ -1,36 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://sreerajarajeswarimotors.com/services/mechanical-repairs</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1626668893632-6f3a4466d22f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Car Mechanical Repairs &amp; Engine Diagnostics in Tirupati | SRM Motors</image:title>
+      <image:caption>Looking for expert car mechanics in Tirupati? SRM Motors in S.V. Autonagar offers comprehensive engine diagnostics, suspension overhauls, and routine maintenance.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://sreerajarajeswarimotors.com/services/tinkering</loc>
-  </url>
-  <url>
-    <loc>https://sreerajarajeswarimotors.com/services/painting</loc>
-  </url>
-  <url>
-    <loc>https://sreerajarajeswarimotors.com/services/teflon-coating</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Expert Car Tinkering &amp; Dent Repair Services in Tirupati | SRM Motors</image:title>
+      <image:caption>Restore your car&apos;s factory shape with professional auto body tinkering and dent removal in Tirupati at SRM Motors. Structural realignment and rust repair experts.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://sreerajarajeswarimotors.com/services/ac-repairs</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Car AC Repair &amp; Gas Refilling Service in Tirupati | SRM Motors</image:title>
+      <image:caption>Is your car AC blowing warm air? SRM Motors in Tirupati offers complete car air conditioning repair, R134a/R1234yf gas refilling, and leak detection.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://sreerajarajeswarimotors.com/services/insurance-claims</loc>
-  </url>
-  <url>
-    <loc>https://sreerajarajeswarimotors.com/services/roadside-assistance</loc>
-  </url>
-  <url>
-    <loc>https://sreerajarajeswarimotors.com/services/breakdown-services</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Cashless Car Insurance Claims &amp; Accidental Repair in Tirupati | SRM Motors</image:title>
+      <image:caption>Simplify your car insurance claims with SRM Motors in Tirupati. We coordinate with surveyors for hassle-free accidental repair and cashless claim processing.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://sreerajarajeswarimotors.com/services/roadside-towing</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>24/7 Car Towing Service &amp; Flatbed Recovery in Tirupati | SRM Motors</image:title>
+      <image:caption>Stranded? SRM Motors offers fast, safe, and secure 24/7 flatbed car towing services in and around Tirupati. Call us for immediate vehicle recovery.</image:caption>
+    </image:image>
   </url>
   <url>
-    <loc>https://sreerajarajeswarimotors.com/services/spare-parts</loc>
+    <loc>https://sreerajarajeswarimotors.com/services/teflon-coating</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Premium Car Teflon Coating &amp; Paint Protection in Tirupati | SRM Motors</image:title>
+      <image:caption>Protect your car&apos;s paint and maintain a glossy finish with premium Teflon coating services at SRM Motors in Tirupati. Anti-scratch and weather protection.</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://sreerajarajeswarimotors.com/services/electrical-work</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1563261683-9e4ba6f4526d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Auto Electrical Repairs &amp; Wiring Diagnostics in Tirupati | SRM Motors</image:title>
+      <image:caption>Expert car electrical repairs in Tirupati. SRM Motors specializes in wiring diagnostics, battery issues, alternator repairs, and sensor replacements.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://sreerajarajeswarimotors.com/services/painting</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Car Painting &amp; Scratch Removal in Tirupati | SRM Motors</image:title>
+      <image:caption>Get factory-finish car painting and scratch removal in Tirupati at SRM Motors. We use premium automotive paints for perfect color matching and glossy finish.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://sreerajarajeswarimotors.com/services/roadside-assistance</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Car Roadside Assistance in Tirupati | SRM Motors</image:title>
+      <image:caption>Emergency car roadside assistance in Tirupati. Flat tire assistance, battery jump-start, and breakdown support by SRM Motors on Renigunta Road.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://sreerajarajeswarimotors.com/services/breakdown-services</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1598257006458-087169a1f08d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Car Breakdown Repair Services in Tirupati | SRM Motors</image:title>
+      <image:caption>Stuck with a broken car? SRM Motors offers rapid car breakdown repair services in Tirupati to diagnose and fix unexpected mechanical failures.</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://sreerajarajeswarimotors.com/services/spare-parts</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Genuine OEM Car Spare Parts in Tirupati | SRM Motors</image:title>
+      <image:caption>Looking for genuine car spare parts in Tirupati? SRM Motors supplies and installs 100% authentic OEM components for all major car brands.</image:caption>
+    </image:image>
   </url>
 </urlset>

@@ -12,7 +12,7 @@ import {
   RefreshCw,
   ShieldCheck
 } from 'lucide-react';
-import type { WorkItem, WorkType } from '../../../types/billing';
+import type { WorkItem } from '../../../types/billing';
 import { BillingService } from '../../../services/billingService';
 
 export const WorksCatalogueModule: React.FC = () => {
@@ -27,7 +27,9 @@ export const WorksCatalogueModule: React.FC = () => {
 
   // Form State
   const [formWorkName, setFormWorkName] = useState<string>('');
-  const [formWorkType, setFormWorkType] = useState<WorkType>('Labour');
+  const [formWorkType, setFormWorkType] = useState<string>('Labour');
+  const [formCustomTypeName, setFormCustomTypeName] = useState<string>('');
+  const [isFormCustomType, setIsFormCustomType] = useState<boolean>(false);
   const [formIsActive, setFormIsActive] = useState<boolean>(true);
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -56,7 +58,7 @@ export const WorksCatalogueModule: React.FC = () => {
   const filteredWorks = useMemo(() => {
     if (!searchQuery.trim()) return works;
     const query = searchQuery.trim().toLowerCase();
-    return works.filter((w) => w.work_name.toLowerCase().includes(query));
+    return works.filter((w) => w.work_name.toLowerCase().includes(query) || (w.work_type && w.work_type.toLowerCase().includes(query)));
   }, [works, searchQuery]);
 
   // Combined metrics
@@ -64,11 +66,15 @@ export const WorksCatalogueModule: React.FC = () => {
   const activeCount = works.filter((w) => w.is_active).length;
   const labourCount = works.filter((w) => w.work_type === 'Labour').length;
   const partCount = works.filter((w) => w.work_type === 'Part').length;
+  const towingCount = works.filter((w) => w.work_type === 'Towing').length;
+  const customCount = works.filter((w) => w.work_type !== 'Labour' && w.work_type !== 'Part' && w.work_type !== 'Towing').length;
 
   // Open Add Modal
   const handleOpenAddModal = () => {
     setFormWorkName('');
     setFormWorkType('Labour');
+    setFormCustomTypeName('');
+    setIsFormCustomType(false);
     setFormIsActive(true);
     setFormError(null);
     setIsAddModalOpen(true);
@@ -78,7 +84,15 @@ export const WorksCatalogueModule: React.FC = () => {
   const handleOpenEditModal = (work: WorkItem) => {
     setEditingWork(work);
     setFormWorkName(work.work_name);
-    setFormWorkType(work.work_type);
+    if (work.work_type === 'Labour' || work.work_type === 'Part' || work.work_type === 'Towing') {
+      setFormWorkType(work.work_type);
+      setFormCustomTypeName('');
+      setIsFormCustomType(false);
+    } else {
+      setFormWorkType('Custom');
+      setFormCustomTypeName(work.work_type || 'Custom');
+      setIsFormCustomType(true);
+    }
     setFormIsActive(work.is_active);
     setFormError(null);
   };
@@ -102,10 +116,19 @@ export const WorksCatalogueModule: React.FC = () => {
       return;
     }
 
+    const effectiveType = isFormCustomType 
+      ? (formCustomTypeName.trim() || 'Custom') 
+      : formWorkType;
+
+    if (isFormCustomType && !formCustomTypeName.trim()) {
+      setFormError('Please enter a custom type name.');
+      return;
+    }
+
     setIsSubmitting(true);
     const result = await BillingService.createWorkItem({
       work_name: cleanName,
-      work_type: formWorkType,
+      work_type: effectiveType,
       is_active: formIsActive,
     });
     setIsSubmitting(false);
@@ -115,7 +138,7 @@ export const WorksCatalogueModule: React.FC = () => {
       return;
     }
 
-    showToast(`Work "${cleanName}" created successfully with type [${formWorkType}].`);
+    showToast(`Work "${cleanName}" created successfully with type [${effectiveType}].`);
     closeModal();
     loadWorks();
   };
@@ -132,10 +155,19 @@ export const WorksCatalogueModule: React.FC = () => {
       return;
     }
 
+    const effectiveType = isFormCustomType 
+      ? (formCustomTypeName.trim() || 'Custom') 
+      : formWorkType;
+
+    if (isFormCustomType && !formCustomTypeName.trim()) {
+      setFormError('Please enter a custom type name.');
+      return;
+    }
+
     setIsSubmitting(true);
     const result = await BillingService.updateWorkItem(editingWork.id, {
       work_name: cleanName,
-      work_type: formWorkType,
+      work_type: effectiveType,
       is_active: formIsActive,
     });
     setIsSubmitting(false);
@@ -145,7 +177,7 @@ export const WorksCatalogueModule: React.FC = () => {
       return;
     }
 
-    showToast(`Work "${cleanName}" updated successfully.`);
+    showToast(`Work "${cleanName}" updated successfully with type [${effectiveType}].`);
     closeModal();
     loadWorks();
   };
@@ -216,22 +248,26 @@ export const WorksCatalogueModule: React.FC = () => {
       </div>
 
       {/* Metrics Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
         <div className="p-3 bg-slate-900/60 border border-slate-800 rounded-xl">
           <span className="text-slate-400 block mb-0.5">Total Works</span>
           <strong className="text-base font-extrabold text-white">{totalCount}</strong>
         </div>
         <div className="p-3 bg-slate-900/60 border border-slate-800 rounded-xl">
-          <span className="text-slate-400 block mb-0.5">Active Works</span>
+          <span className="text-slate-400 block mb-0.5">Active</span>
           <strong className="text-base font-extrabold text-emerald-400">{activeCount}</strong>
         </div>
         <div className="p-3 bg-slate-900/60 border border-slate-800 rounded-xl">
-          <span className="text-slate-400 block mb-0.5">Labour Types</span>
+          <span className="text-slate-400 block mb-0.5">Labour</span>
           <strong className="text-base font-extrabold text-blue-400">{labourCount}</strong>
         </div>
         <div className="p-3 bg-slate-900/60 border border-slate-800 rounded-xl">
-          <span className="text-slate-400 block mb-0.5">Part Types</span>
+          <span className="text-slate-400 block mb-0.5">Parts</span>
           <strong className="text-base font-extrabold text-amber-400">{partCount}</strong>
+        </div>
+        <div className="p-3 bg-slate-900/60 border border-slate-800 rounded-xl">
+          <span className="text-slate-400 block mb-0.5">Towing / Other</span>
+          <strong className="text-base font-extrabold text-purple-400">{towingCount + customCount}</strong>
         </div>
       </div>
 
@@ -239,9 +275,9 @@ export const WorksCatalogueModule: React.FC = () => {
       <div className="p-4 bg-slate-900/40 border border-slate-800/80 rounded-xl flex items-start gap-3 text-xs">
         <ShieldCheck className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <span className="font-bold text-slate-200 block">Combined Catalogue & Duplicate Protection</span>
+          <span className="font-bold text-slate-200 block">Flexible Catalogue & Duplicate Protection</span>
           <p className="text-slate-400 leading-relaxed">
-            All Labour and Parts are maintained in <strong className="text-slate-200">one unified catalogue</strong>. 
+            All Labour, Parts, Towing, and Custom works are maintained in <strong className="text-slate-200">one unified catalogue</strong>. 
             When a work is selected during billing, its Type is automatically set. Works are case-insensitively protected against duplicate entries.
           </p>
         </div>
@@ -258,7 +294,7 @@ export const WorksCatalogueModule: React.FC = () => {
               type="text" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search works by name (e.g. Engine Oil, Service, Brake)..." 
+              placeholder="Search works by name or type (e.g. Engine Oil, Towing, Brake)..." 
               className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-red-600 transition-colors"
             />
             {searchQuery && (
@@ -326,7 +362,11 @@ export const WorksCatalogueModule: React.FC = () => {
                       <span className={`px-2.5 py-1 rounded-md text-[10px] font-extrabold tracking-wider uppercase border ${
                         work.work_type === 'Labour'
                           ? 'bg-blue-950/80 text-blue-300 border-blue-800/60'
-                          : 'bg-amber-950/80 text-amber-300 border-amber-800/60'
+                          : work.work_type === 'Part'
+                          ? 'bg-amber-950/80 text-amber-300 border-amber-800/60'
+                          : work.work_type === 'Towing'
+                          ? 'bg-sky-950/80 text-sky-300 border-sky-800/60'
+                          : 'bg-purple-950/80 text-purple-300 border-purple-800/60'
                       }`}>
                         {work.work_type}
                       </span>
@@ -426,12 +466,12 @@ export const WorksCatalogueModule: React.FC = () => {
                 <label className="block font-semibold text-slate-300 mb-1.5">
                   Work Type <span className="text-red-400">*</span>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <button
                     type="button"
-                    onClick={() => setFormWorkType('Labour')}
-                    className={`p-3 rounded-xl border text-center font-bold transition-all ${
-                      formWorkType === 'Labour'
+                    onClick={() => { setFormWorkType('Labour'); setIsFormCustomType(false); }}
+                    className={`p-2.5 rounded-xl border text-center font-bold text-xs transition-all ${
+                      !isFormCustomType && formWorkType === 'Labour'
                         ? 'bg-blue-950/80 border-blue-600 text-blue-300 shadow-md'
                         : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800'
                     }`}
@@ -440,16 +480,50 @@ export const WorksCatalogueModule: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFormWorkType('Part')}
-                    className={`p-3 rounded-xl border text-center font-bold transition-all ${
-                      formWorkType === 'Part'
+                    onClick={() => { setFormWorkType('Part'); setIsFormCustomType(false); }}
+                    className={`p-2.5 rounded-xl border text-center font-bold text-xs transition-all ${
+                      !isFormCustomType && formWorkType === 'Part'
                         ? 'bg-amber-950/80 border-amber-600 text-amber-300 shadow-md'
                         : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800'
                     }`}
                   >
                     Part
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => { setFormWorkType('Towing'); setIsFormCustomType(false); }}
+                    className={`p-2.5 rounded-xl border text-center font-bold text-xs transition-all ${
+                      !isFormCustomType && formWorkType === 'Towing'
+                        ? 'bg-sky-950/80 border-sky-600 text-sky-300 shadow-md'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800'
+                    }`}
+                  >
+                    Towing
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsFormCustomType(true)}
+                    className={`p-2.5 rounded-xl border text-center font-bold text-xs transition-all ${
+                      isFormCustomType
+                        ? 'bg-purple-950/80 border-purple-600 text-purple-300 shadow-md'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800'
+                    }`}
+                  >
+                    Custom
+                  </button>
                 </div>
+                {isFormCustomType && (
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      value={formCustomTypeName}
+                      onChange={(e) => setFormCustomTypeName(e.target.value)}
+                      placeholder="Type custom name (e.g. Inspection, Washing, Painting)..."
+                      className="w-full bg-slate-950 border border-purple-700/60 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500"
+                      required
+                    />
+                  </div>
+                )}
                 <span className="text-[10px] text-slate-500 mt-1 block">
                   Selecting this work during bill creation will automatically set this Type.
                 </span>
@@ -527,12 +601,12 @@ export const WorksCatalogueModule: React.FC = () => {
                 <label className="block font-semibold text-slate-300 mb-1.5">
                   Work Type <span className="text-red-400">*</span>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <button
                     type="button"
-                    onClick={() => setFormWorkType('Labour')}
-                    className={`p-3 rounded-xl border text-center font-bold transition-all ${
-                      formWorkType === 'Labour'
+                    onClick={() => { setFormWorkType('Labour'); setIsFormCustomType(false); }}
+                    className={`p-2.5 rounded-xl border text-center font-bold text-xs transition-all ${
+                      !isFormCustomType && formWorkType === 'Labour'
                         ? 'bg-blue-950/80 border-blue-600 text-blue-300 shadow-md'
                         : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800'
                     }`}
@@ -541,16 +615,50 @@ export const WorksCatalogueModule: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setFormWorkType('Part')}
-                    className={`p-3 rounded-xl border text-center font-bold transition-all ${
-                      formWorkType === 'Part'
+                    onClick={() => { setFormWorkType('Part'); setIsFormCustomType(false); }}
+                    className={`p-2.5 rounded-xl border text-center font-bold text-xs transition-all ${
+                      !isFormCustomType && formWorkType === 'Part'
                         ? 'bg-amber-950/80 border-amber-600 text-amber-300 shadow-md'
                         : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800'
                     }`}
                   >
                     Part
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => { setFormWorkType('Towing'); setIsFormCustomType(false); }}
+                    className={`p-2.5 rounded-xl border text-center font-bold text-xs transition-all ${
+                      !isFormCustomType && formWorkType === 'Towing'
+                        ? 'bg-sky-950/80 border-sky-600 text-sky-300 shadow-md'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800'
+                    }`}
+                  >
+                    Towing
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsFormCustomType(true)}
+                    className={`p-2.5 rounded-xl border text-center font-bold text-xs transition-all ${
+                      isFormCustomType
+                        ? 'bg-purple-950/80 border-purple-600 text-purple-300 shadow-md'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:bg-slate-800'
+                    }`}
+                  >
+                    Custom
+                  </button>
                 </div>
+                {isFormCustomType && (
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      value={formCustomTypeName}
+                      onChange={(e) => setFormCustomTypeName(e.target.value)}
+                      placeholder="Type custom name (e.g. Inspection, Washing, Painting)..."
+                      className="w-full bg-slate-950 border border-purple-700/60 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500"
+                      required
+                    />
+                  </div>
+                )}
               </div>
 
               <div>
